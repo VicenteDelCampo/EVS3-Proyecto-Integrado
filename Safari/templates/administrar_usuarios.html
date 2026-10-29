@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        {% load static %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Administrar Usuarios</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+        <script src="{% static "alertify/alertify.min.js" %}"></script>
+        <link rel="stylesheet" href="{% static "alertify/css/alertify.min.css" %}" />
+        <link rel="stylesheet" href="{% static "alertify/css/themes/default.min.css" %}" />
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.31/dist/sweetalert2.all.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.31/dist/sweetalert2.min.css" rel="stylesheet">
+        
+        <style>
+            body {
+                background-color: #e8ecf2 !important;
+                color: #1e293b;
+                font-family: sans-serif;
+            }
+
+
+            .btn-action {
+                width: 36px;
+                height: 36px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 8px;
+                border: none;
+                text-decoration: none;
+                transition: all 0.2s ease-in-out;
+            }
+            .btn-action-edit {
+                background-color: #ecfdf5;
+                color: #10b981;
+            }
+            .btn-action-edit:hover {
+                background-color: #d1fae5;
+                color: #059669;
+            }
+            .btn-action-delete {
+                background-color: #fef2f2;
+                color: #ef4444;
+            }
+            .btn-action-delete:hover {
+                background-color: #fee2e2;
+                color: #dc2626;
+            }
+        </style>
+
+
+        <script>
+            const botonEliminar = (id) => {
+                Swal.fire({
+                    title: "Eliminar Género",
+                    text: "¿Estás seguro de que deseas eliminar el registro con ID (" + id + ")?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#4f46e5",
+                    cancelButtonColor: "#94a3b8",
+                    confirmButtonText: "Sí, eliminar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/eliminar_genero/" + id + "/";
+                    }
+                });
+            }
+        </script>
+
+    </head>
+    <body>
+
+        <div class="fs-5 fw-bold ">
+            <nav class="navbar navbar-expand-lg p-3" style="background-color: #25a1b9;">
+            <div class="container-fluid" >
+                <a class="navbar-brand link-light"  href="/"> <- Volver</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                    <a class="nav-link link-light" href="/panel_admin/">Panel Administrador</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link link-light" href="/panel_cajero/">Panel Cajero</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link link-light" href="/panel_mesero/">Panel Mesero</a>
+                    </li>
+                </ul>
+              </div>
+            </div>
+            </nav>  
+        </div>
+
+        <div class="container py-4" style="max-width: 900px;">
+            
+            <div class="mb-4 pb-2 border-bottom">
+                <h2 class="h4 fw-bold mb-1" style="color: var(--text-primary);">Gestión de Usuarios</h2>
+                <p class="text-muted small mb-0">Crear nuevos usuario o administra los existentes en la base de datos.</p>
+            </div>
+
+            {% if r %}
+                <script>
+                    alertify.success('{{ r }}')
+                </script>
+            {% endif %}
+
+
+            {% if r2 %}
+                <script>
+                    alertify.error('{{ r2 }}')
+                </script>
+            {% endif %}
+
+            <!-- Card de Registro -->
+            <div class="bg-white p-4 mb-4" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                <h3 class="h6 fw-semibold mb-3 text-secondary" ><i class="bi bi-plus-circle me-1"></i> Registrar Nuevo Usuario</h3>
+                <form action="/registrar_mesa/" method="post">
+                    {% csrf_token %}
+                    <div class="row g-2">
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" name="txtnomusu" placeholder="Nombre del Usuario" required style="border-color: gray; border-radius: 8px; padding: 0.6rem 0.9rem;"/>
+                        </div>
+
+                        <div class="col-md-4 ">
+                            <button class="btn w-100 fw-medium d-flex align-items-center justify-content-center gap-2 text-white" type="submit" style="background-color: #4f46e5; border-radius: 8px; padding: 0.6rem; border: none;">
+                                <i class="bi bi-check2-circle me-1"></i> Registrar Usuario
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+
+
+            
+            <!-- Card de Listado -->
+            <div class="content-card p-0 overflow-hidden" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                <div class="px-4 py-3 d-flex justify-content-between align-items-center bg-light-subtle" style="border-bottom: 1px solid #f1f5f9;">
+                    <span class="fw-semibold text-secondary small text-uppercase" style="color: #64748b; letter-spacing: 0.5px; font-size: 0.8rem;">Mesas Registradas</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom text-center align-middle">
+                        <thead style="border-bottom: 1px solid #f1f5f9;">
+                            <tr >
+                                <th style="width: 15%;">ID</th>
+                                <th class="" style="width: 18%;">NOMBRE</th>
+                                <th style="width: 15%;">EDITAR</th>
+                                <th style="width: 15%;">ELIMINAR</th>
+                            </tr>
+                        </thead>
+                        <tbody style="border-top: none;"    >
+                            {% for x in usu %}
+                                <tr>
+                                    <td>{{x.id}}</td>
+                                    <td class="">{{x.nombre}}</td>
+                                    <td>
+                                        <a href="/act_usu/{{ x.id }}" class="btn-action btn-action-edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <button onclick="botonEliminar({{x.id}})" type="submit" class="btn-action btn-action-delete">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

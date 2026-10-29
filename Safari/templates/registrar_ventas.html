@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title>Registrar Venta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body { background-color: #e8ecf2 !important; color: #1e293b; font-family: sans-serif; }
+    </style>
+</head>
+<body>
+
+    <div class="fs-5 fw-bold">
+        <nav class="navbar navbar-expand-lg p-3" style="background-color: #25a1b9;">
+            <div class="container-fluid">
+                <a class="navbar-brand link-light" href="/panel_cajero/"> &lt;- Volver</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link link-light" href="/panel_admin/">Panel Administrador</a></li>
+                        <li class="nav-item"><a class="nav-link link-light" href="/panel_cajero/">Panel Cajero</a></li>
+                        <li class="nav-item"><a class="nav-link link-light" href="/panel_mesero/">Panel Mesero</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container py-4" style="max-width: 900px;">
+        <div class="mb-4 pb-2 border-bottom">
+            <h2 class="h4 fw-bold mb-1">Registrar Venta</h2>
+            <p class="text-muted small mb-0">Ingresa los productos, método de pago o asigna el fiado correspondiente.</p>
+        </div>
+
+        <div class="bg-white p-4" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label small text-secondary fw-semibold">Punto de Venta / Caja</label>
+                        <select name="cbopunto" class="form-select" required>
+                            <option value="">Seleccione caja...</option>
+                            {% for p in puntos %}
+                                <option value="{{ p.id }}">{{ p.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label small text-secondary fw-semibold">Tipo de Comprobante</label>
+                        <select name="" class="form-select" required>
+                            <option value="BOLETA">Boleta Electrónica</option>
+                            <option value="FACTURA">Factura</option>
+                            <option value="TICKET_INTERNO">Ticket de Control Interno</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label small text-secondary fw-semibold">Método de Pago</label>
+                        <select name="" class="form-select" required>
+                            <option value="EFECTIVO">Efectivo</option>
+                            <option value="DEBITO">Tarjeta Débito</option>
+                            <option value="CREDITO">Tarjeta Crédito</option>
+                            <option value="FIADO">Fiado a Trabajador</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label small text-secondary fw-semibold">Trabajador (si aplica fiado)</label>
+                        <select name="" class="form-select">
+                            <option value="">No aplica / Ninguno</option>
+                            <option value="">Trabajador</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label small text-secondary fw-semibold">Comentarios / Observaciones del Pedido</label>
+                        <input type="text" name="txtcomentario" class="form-control" placeholder="Ej: Sin cebolla, extra salsa, llevar para las 14:00...">
+                    </div>
+
+                    <div class="col-12 pt-3 border-top d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-secondary small">Total a cobrar:</span>
+                            <span class="fs-4 fw-bold text-dark ms-2">$0</span>
+                        </div>
+                        <button type="submit" class="btn text-white px-4" style="background-color: #4f46e5; border-radius: 8px; padding: 0.6rem; border: none;">
+                            <i class="bi bi-printer me-1"></i> Generar Venta y Ticket
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

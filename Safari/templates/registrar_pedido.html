@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Registrar Pedido</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        body {
+            background-color: #e8ecf2 !important;
+            color: #1e293b;
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fs-5 fw-bold">
+        <nav class="navbar navbar-expand-lg p-3" style="background-color: #25a1b9;">
+            <div class="container-fluid">
+                <a class="navbar-brand link-light" href="/panel_mesero/"> &lt;- Volver</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link link-light" href="/panel_admin/">Panel Administrador</a></li>
+                        <li class="nav-item"><a class="nav-link link-light" href="/panel_cajero/">Panel Cajero</a></li>
+                        <li class="nav-item"><a class="nav-link link-light" href="/panel_mesero/">Panel Mesero</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container py-4" style="max-width: 900px;">
+        
+        <div class="mb-4 pb-2 border-bottom">
+            <h2 class="h4 fw-bold mb-1">Registrar Pedido</h2>
+            <p class="text-muted small mb-0">Selecciona la mesa y agrega todos los platos o bebidas que requiera el cliente.</p>
+        </div>
+
+        <form action="/guardar_pedido/" method="post">
+            {% csrf_token %}
+            <div class="bg-white p-4 mb-4" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <h3 class="h6 fw-semibold mb-3 text-secondary"> Ubicación del Pedido</h3>
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label class="form-label small text-secondary fw-semibold">Mesa Asignada</label>
+                        <select name="cbomesa" class="form-select" required style="border-radius: 8px;">
+                            <option value="">Seleccione la mesa...</option>
+                            {% for m in mesas %}
+                                <option value="{{ m.id }}">{{ m.nombre }} ({{ m.puntoventa }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+   
+            <div class="bg-white p-4 mb-4" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <h3 class="h6 fw-semibold mb-3 text-secondary">Agregar Platos / Bebidas</h3>
+                
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-6">
+                        <label class="form-label small text-secondary fw-semibold">Plato o Producto</label>
+                        <select id="" class="form-select" style="border-radius: 8px;">
+                            <option value="">Selecciona un plato de la carta...</option>
+                            {% for x in productos %}
+                                <option value="" nombre="" precio="">
+                                    {{ x.nombre }} - ${{ x.precio }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label small text-secondary fw-semibold">Cantidad</label>
+                        <input type="number" id="" class="form-control" value="1" min="1" style="border-radius: 8px;">
+                    </div>
+
+                    <div class="col-md-3">
+                        <button type="button" class="btn w-100 text-white" onclick="" style="background-color: #10b981; border-radius: 8px; padding: 0.6rem; border: none;">
+                            <i class="bi bi-plus-circle me-1"></i> Añadir Ítem
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive mt-4">
+                    <table class="table text-center align-middle mb-0" id="tablaDetalle">
+                        <thead style="border-bottom: 1px solid #f1f5f9;">
+                            <tr style="color: #64748b; font-size: 0.78rem;">
+                                <th style="text-align: left; padding: 12px;">PLATO / PRODUCTO</th>
+                                <th style="width: 20%; padding: 12px;">CANTIDAD</th>
+                                <th style="width: 20%; padding: 12px;">PRECIO UNITARIO</th>
+                                <th style="width: 15%; padding: 12px;">QUITAR</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaPlatos">
+                            <tr id="filaVacia">
+                                <td colspan="4" class="text-muted py-4 small">No se han añadido productos a la comanda todavía.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="bg-white p-4" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <div class="mb-3">
+                    <label class="form-label small text-secondary fw-semibold">Notas para Cocina / Barra</label>
+                    <input type="text" name="txtnotas" class="form-control" placeholder="Ej: Sin cebolla la hamburguesa, bebida sin hielo..." style="border-radius: 8px;">
+                </div>
+
+                <div class="text-end pt-2">
+                    <button class="btn text-white px-4" type="submit" style="background-color: #4f46e5; border-radius: 8px; padding: 0.6rem 1.2rem; border: none;">
+                        <i class="bi bi-send-check me-1"></i> Enviar Pedido a Cocina
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
