@@ -73,6 +73,24 @@
             }
         </script>
 
+                <script>
+            const botonCerrarSesion = () => {
+                Swal.fire({
+                    title: "Pregunta",
+                    text: "¿Estás Seguro(a) de Querer Cerrar la Sesión?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "#4f46e5",
+                    cancelButtonColor: "#94a3b8",
+                    confirmButtonText: "Aceptar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/cerrar_sesion/";
+                    }
+                });
+            }
+        </script>
     </head>
     <body>
 
@@ -86,13 +104,7 @@
                 <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                    <a class="nav-link link-light" href="/panel_admin/">Panel Administrador</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link link-light" href="/panel_cajero/">Panel Cajero</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link link-light" href="/panel_mesero/">Panel Mesero</a>
+                        <span class="nav-link link-light">Usuario: {{ nomUsuario }}</span>
                     </li>
                 </ul>
               </div>
@@ -123,14 +135,25 @@
             <!-- Card de Registro -->
             <div class="bg-white p-4 mb-4" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
                 <h3 class="h6 fw-semibold mb-3 text-secondary" ><i class="bi bi-plus-circle me-1"></i> Registrar Nuevo Usuario</h3>
-                <form action="/registrar_mesa/" method="post">
+                <form action="/registrar_usuario/" method="post">
                     {% csrf_token %}
                     <div class="row g-2">
-                        <div class="col-md-8">
+                        <div class="col-md-3">
                             <input class="form-control" type="text" name="txtnomusu" placeholder="Nombre del Usuario" required style="border-color: gray; border-radius: 8px; padding: 0.6rem 0.9rem;"/>
                         </div>
+                        <div class="col-md-3">
+                            <input class="form-control" type="number" name="txtconusu" placeholder="Contraseña del Usuario" required style="border-color: gray; border-radius: 8px; padding: 0.6rem 0.9rem;"/>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="cboclausu" class="form-select" required style="border-radius: 8px;">
+                                <option value="">Seleccione la clase...</option>
+                                {% for x in opciones_clases %}
+                                    <option value="{{x.id}}">{{ x.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
 
-                        <div class="col-md-4 ">
+                        <div class="col-md-3 ">
                             <button class="btn w-100 fw-medium d-flex align-items-center justify-content-center gap-2 text-white" type="submit" style="background-color: #4f46e5; border-radius: 8px; padding: 0.6rem; border: none;">
                                 <i class="bi bi-check2-circle me-1"></i> Registrar Usuario
                             </button>
@@ -146,7 +169,7 @@
             <!-- Card de Listado -->
             <div class="content-card p-0 overflow-hidden" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
                 <div class="px-4 py-3 d-flex justify-content-between align-items-center bg-light-subtle" style="border-bottom: 1px solid #f1f5f9;">
-                    <span class="fw-semibold text-secondary small text-uppercase" style="color: #64748b; letter-spacing: 0.5px; font-size: 0.8rem;">Mesas Registradas</span>
+                    <span class="fw-semibold text-secondary small text-uppercase" style="color: #64748b; letter-spacing: 0.5px; font-size: 0.8rem;">Usuarios Registrados</span>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-custom text-center align-middle">
