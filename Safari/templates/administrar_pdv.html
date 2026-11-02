@@ -67,7 +67,7 @@
                     cancelButtonText: "Cancelar"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = "/eliminar_genero/" + id + "/";
+                        window.location.href = "/eliminar_pdv/" + id + "/";
                     }
                 });
             }
@@ -136,7 +136,7 @@
             <!-- Card de Registro -->
             <div class="bg-white p-4 mb-4" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
                 <h3 class="h6 fw-semibold mb-3 text-secondary" ><i class="bi bi-plus-circle me-1"></i> Registrar Nuevo Punto de Venta</h3>
-                <form action="/registrar_mesa/" method="post">
+                <form action="/registrar_pdv/" method="post">
                     {% csrf_token %}
                     <div class="row g-2">
                         <div class="col-md-8">
@@ -167,16 +167,19 @@
                             <tr >
                                 <th style="width: 15%;">ID</th>
                                 <th class="" style="width: 18%;">NOMBRE</th>
+                                <th class="" style="width: 18%;">USUARIO</th>
                                 <th style="width: 15%;">EDITAR</th>
                                 <th style="width: 15%;">ELIMINAR</th>
                             </tr>
                         </thead>
                         <tbody style="border-top: none;"    >
-                            {% for x in usu %}
+                            {% for x in pdv %}
                                 <tr>
                                     <td>{{x.id}}</td>
-                                    <td class="">{{x.nombre}}</td>                                    <td>
-                                        <a href="/act_usu/{{ x.id }}" class="btn-action btn-action-edit">
+                                    <td class="">{{x.nombre}}</td>
+                                    <td class="">{{x.usuario.nombre}}</td>
+                                    <td>
+                                        <a href="/act_pdv/{{ x.id }}" class="btn-action btn-action-edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                     </td>

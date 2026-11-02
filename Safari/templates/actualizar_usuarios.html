@@ -67,7 +67,7 @@
                     cancelButtonText: "Cancelar"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = "/eliminar_genero/" + id + "/";
+                        window.location.href = "/eliminar_usuario/" + id + "/";
                     }
                 });
             }
@@ -134,7 +134,7 @@
 
             <!-- Card de Registro -->
             <div class="bg-white p-4 mb-4" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-                <h3 class="h6 fw-semibold mb-3 text-secondary" ><i class="bi bi-plus-circle me-1"></i> Registrar Nuevo Usuario</h3>
+                <h3 class="h6 fw-semibold mb-3 text-secondary" ><i class="bi bi-plus-circle me-1"></i> Actualizar Usuario</h3>
                 <form action="/actualizar_usuario/{{ rs.0.id }}/" method="post">
                     {% csrf_token %}
                     <div class="row g-2">

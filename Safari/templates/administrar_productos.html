@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        {% load static %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Administrar Productos</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+        <script src="{% static "alertify/alertify.min.js" %}"></script>
+        <link rel="stylesheet" href="{% static "alertify/css/alertify.min.css" %}" />
+        <link rel="stylesheet" href="{% static "alertify/css/themes/default.min.css" %}" />
+        
+        <style>
+            body { background-color: #e8ecf2 !important; color: #1e293b; font-family: sans-serif; }
+            .btn-action { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: none; text-decoration: none; transition: all 0.2s ease-in-out; }
+            .btn-action-edit { background-color: #ecfdf5; color: #10b981; }
+            .btn-action-edit:hover { background-color: #d1fae5; color: #059669; }
+            .btn-action-delete { background-color: #fef2f2; color: #ef4444; }
+            .btn-action-delete:hover { background-color: #fee2e2; color: #dc2626; }
+        </style>
+
+        <script>
+            const botonEliminar = (id) => {
+                Swal.fire({
+                    title: "Eliminar Producto",
+                    text: "¿Estás seguro de que deseas eliminar el producto con ID (" + id + ")?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#4f46e5",
+                    cancelButtonColor: "#94a3b8",
+                    confirmButtonText: "Sí, eliminar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/eliminar_producto/" + id + "/";
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <div class="fs-5 fw-bold ">
+            <nav class="navbar navbar-expand-lg p-3" style="background-color: #25a1b9;">
+            <div class="container-fluid" >
+                <a class="navbar-brand link-light" href="/panel_admin/"> &lt;- Volver</a>
+                <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <span class="nav-link link-light">Usuario: {{ nomUsuario }}</span>
+                    </li>
+                </ul>
+              </div>
+            </div>
+            </nav>  
+        </div>
+
+        <div class="container py-4" style="max-width: 900px;">
+            <div class="mb-4 pb-2 border-bottom">
+                <h2 class="h4 fw-bold mb-1" style="color: var(--text-primary);">Gestión de Productos</h2>
+                <p class="text-muted small mb-0">Crea nuevos productos o administra los existentes en la base de datos.</p>
+            </div>
+
+            {% if r %} <script>alertify.success('{{ r }}')</script> {% endif %}
+            {% if r2 %} <script>alertify.error('{{ r2 }}')</script> {% endif %}
+
+            <!-- Card de Registro -->
+            <div class="bg-white p-4 mb-4" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                <h3 class="h6 fw-semibold mb-3 text-secondary" ><i class="bi bi-plus-circle me-1"></i> Registrar Nuevo Producto</h3>
+                <form action="/registrar_producto/" method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label small text-secondary fw-semibold">Nombre del Producto</label>
+                            <input class="form-control" type="text" name="txtnompro" placeholder="Ej: Pizza Margarita" required style="border-color: #cbd5e1; border-radius: 8px;">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small text-secondary fw-semibold">Precio</label>
+                            <input class="form-control" type="number" name="numprepro" min="0" placeholder="Ej: 5000" required style="border-color: #cbd5e1; border-radius: 8px;">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label small text-secondary fw-semibold">Descripción</label>
+                            <input class="form-control" type="text" name="txtdespro" placeholder="Breve descripción del producto" required style="border-color: #cbd5e1; border-radius: 8px;">
+                        </div>
+                        <div class="col-12 text-end pt-2">
+                            <button class="btn px-4 text-white fw-medium" type="submit" style="background-color: #4f46e5; border-radius: 8px;">
+                                <i class="bi bi-check2-circle me-1"></i> Registrar Producto
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Card de Listado -->
+            <div class="bg-white p-0 overflow-hidden" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                <div class="px-4 py-3 bg-light-subtle" style="border-bottom: 1px solid #f1f5f9;">
+                    <span class="fw-semibold text-secondary small text-uppercase" style="letter-spacing: 0.5px;">Productos Registrados</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom text-center align-middle mb-0">
+                        <thead>
+                            <tr style="color: #64748b; font-size: 0.78rem;">
+                                <th>ID</th>
+                                <th class="text-start">NOMBRE</th>
+                                <th>PRECIO</th>
+                                <th>USUARIO</th>
+                                <th>EDITAR</th>
+                                <th>ELIMINAR</th>
+                            </tr>
+                        </thead>
+                        <tbody style="border-top: none;">
+                            {% for x in pro %}
+                                <tr>
+                                    <td>{{ x.id }}</td>
+                                    <td class="text-start fw-medium">{{ x.nombre }}</td>
+                                    <td>${{ x.precio }}</td>
+                                    <td><span class="">{{ x.usuario.nombre }}</span></td>
+                                    <td>
+                                        <a href="/act_pro/{{ x.id }}/" class="btn-action btn-action-edit"><i class="bi bi-pencil"></i></a>
+                                    </td>
+                                    <td>
+                                        <button onclick="botonEliminar({{ x.id }})" type="button" class="btn-action btn-action-delete"><i class="bi bi-trash3"></i></button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

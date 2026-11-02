@@ -18,28 +18,47 @@ class Historial(models.Model):
     descripcion_historial = models.TextField(max_length=200)
     tabla_afectada_historial = models.TextField(max_length=100)
     fecha_hora_historial = models.DateTimeField()
-    
-class Mesa(models.Model):
-    nombre = models.TextField(max_length=30)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.name
-    
+
 class PuntodeVenta(models.Model):
     nombre = models.TextField(max_length=100)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     def __str__(self):
-        return self.name
+        return self.nombre
+
+class Mesa(models.Model):
+    nombre = models.TextField(max_length=30)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    pdv = models.ForeignKey(PuntodeVenta, on_delete=models.CASCADE)
+    estado = models.TextField(max_length=15)
+    def __str__(self):
+        return self.nombre
 
 class Producto(models.Model):
     nombre = models.TextField(max_length=100)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     descripcion = models.TextField(max_length=255)
+    precio = models.IntegerField(default=0)
     def __str__(self):
-        return self.name
+        return self.nombre
     
 class Ticket(models.Model):
     correo = models.TextField(max_length=255)
     tipo = models.TextField(max_length=255)
     descripcion = models.TextField(max_length=255)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    
+class Venta(models.Model):
+    fecha = models.DateTimeField(auto_now_add=True)
+    puntoventa = models.ForeignKey(PuntodeVenta, on_delete=models.CASCADE)
+    mesa = models.ForeignKey(Mesa, on_delete=models.SET_NULL, null=True)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    total = models.IntegerField(default=0)
+    estado = models.TextField(max_length=20, default="PENDIENTE")
+    def __str__(self):
+        return f"Folio #{self.id} - {self.estado}"
+
+class DetalleVenta(models.Model):
+    venta = models.ForeignKey(Venta, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.IntegerField(default=1)
+    subtotal = models.IntegerField(default=0)
