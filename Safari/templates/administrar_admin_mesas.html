@@ -57,7 +57,7 @@
         <script>
             const botonEliminar = (id) => {
                 Swal.fire({
-                    title: "Eliminar Género",
+                    title: "Eliminar Mesa",
                     text: "¿Estás seguro de que deseas eliminar el registro con ID (" + id + ")?",
                     icon: "warning",
                     showCancelButton: true,
@@ -67,7 +67,7 @@
                     cancelButtonText: "Cancelar"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = "/eliminar_mesa/" + id + "/";
+                        window.location.href = "/eliminar_mesas_admin/" + id + "/";
                     }
                 });
             }
@@ -141,14 +141,14 @@
                     <div class="row g-2">
                         <div class="col-md-5">
                             <label class="form-label small text-secondary fw-semibold">Nombre de la Mesa</label>
-                            <input class="form-control" type="text" name="txtnommesa" placeholder="Nombre del Area y numero de la mesa" required style="border-color: gray; border-radius: 8px; padding: 0.6rem 0.9rem;"/>
+                            <input class="form-control" type="text" name="txtnommes" placeholder="Nombre del Area y numero de la mesa" required style="border-color: gray; border-radius: 8px; padding: 0.6rem 0.9rem;"/>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label small text-secondary fw-semibold">Punto de Venta</label>
                             <select name="cbopunven" class="form-select" required>
                                 <option value="">Seleccione un punto...</option>
-                                {% for x in puntode_ventas %}
+                                {% for x in opciones_pdv %}
                                     <option value="{{ x.id }}">{{x.nombre}}</option>
                                 {% endfor %}
                             </select>
@@ -198,10 +198,10 @@
                                 <tr>
                                     <td>{{x.id}}</td>
                                     <td class="">{{x.nombre}}</td>
-                                    <td>{{x.puntoventa}}</td>
+                                    <td>{{x.pdv.nombre}}</td>
                                     <td class="">{{x.estado}}</td>
                                     <td>
-                                        <a href="/form_act_gen/{{ x.id }}" class="btn-action btn-action-edit">
+                                        <a href="/form_act_mes_adm/{{ x.id }}" class="btn-action btn-action-edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                     </td>
