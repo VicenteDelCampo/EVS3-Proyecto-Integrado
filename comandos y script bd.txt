@@ -1,0 +1,24 @@
+en el cmd instalar: pip install openpyxl
+
+
+py manage.py makemigrations
+py manage.py migrate
+py manage.py runserver
+
+
+
+use django_bd_mesas;
+
+insert into safari_clases (nombre) values ('ADMINISTRADOR');
+insert into safari_clases (nombre) values ('CAJERO');
+insert into safari_clases (nombre) values ('MESERO');
+
+insert into safari_usuario (nombre, password, clase_id) values ('ADMIN',  '111', 1);
+insert into safari_usuario (nombre, password, clase_id) values ('CAJERO', '222', 2);
+insert into safari_usuario (nombre, password, clase_id) values ('MESERO',  '333', 3);
+insert into safari_usuario (nombre, password, clase_id) values ('11.111.111-1',  '111', 1);
+
+insert into safari_puntodeventa (nombre, usuario_id) values ('RESTAURANT', 1);
+insert into safari_puntodeventa (nombre, usuario_id) values ('COCINA', 1);
+
+select * from safari_puntodeventa;
