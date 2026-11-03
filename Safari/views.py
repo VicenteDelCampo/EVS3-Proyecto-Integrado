@@ -1443,3 +1443,6 @@ def mostrar_listado_historial(request, orden):
 
 def mostrar_error_404(request, exception):
     return render(request, 'error404.html', status=404)
+
+def mostrar_error_500(request):
+    return render(request, 'error500.html', status=500)

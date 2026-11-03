@@ -55,3 +55,5 @@ urlpatterns = [
     
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.BASE_DIR / 'Safari' / 'static'}),
 ]
+handler404 = "Safari.views.mostrar_error_404"
+handler500 = "Safari.views.mostrar_error_500"
