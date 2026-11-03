@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="author" content="MLopez" />
+        <meta name="keywords" content="Django, MySQL, Web" />
+        <meta name="description" content="Proyecto Simple Django con MySQL" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>Listado de Historial | HelpDesk Tickets</title>
+ 
+        <!-- Importaciones para bootstrap y tipos de letras (fuentes) de google -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+        
+        <!-- Importaciones para usar librería sweetalert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.all.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.min.css">
+        
+        <!-- Importaciones para usar librería de notificaciones alertify -->
+        <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/default.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/semantic.min.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/bootstrap.min.css"/>
+        
+        <!-- Importaciones para usar librería de paginación -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.6.0/pagination.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.6.0/pagination.css">
+
+        <link rel="stylesheet" href="{% static 'css/estilos.css' %}" />
+
+        <script>
+            const botonCerrarSesion = () => {
+                Swal.fire({
+                    title: "Pregunta",
+                    text: "¿Estás Seguro(a) de Querer Cerrar la Sesión?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "#4f46e5",
+                    cancelButtonColor: "#94a3b8",
+                    confirmButtonText: "Aceptar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/cerrar_sesion/";
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+            <div class="container">
+                <a class="navbar-brand navbar-brand-custom" href="/panel_admin/">
+                    <span class="brand-icon"><i class="bi bi-ticket-perforated-fill"></i></span>
+                    <span>Usuario: {{ nomUsuario }}</span>
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav ms-auto gap-1 mt-3 mt-lg-0">
+                        <a class="nav-link nav-link-custom active" href="/menu_admin/">
+                            <i class="bi bi-house-door"></i> Menú
+                        </a>
+                        <a class="nav-link nav-link-custom" href="/listado_historial/8/">
+                            <i class="bi bi-card-list"></i> Listar Historial
+                        </a>
+                        <button type="button" onClick="botonCerrarSesion()" class="nav-link nav-link-custom nav-link-logout">
+                            Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="container py-5">
+
+
+            {% if r %}
+                <script>
+                    alertify.success("{{ r }}");
+                </script>
+            {% endif %}
+
+
+            {% if r2 %}
+                <script>
+                    alertify.error("{{ r2 }}");
+                </script>
+            {% endif %}
+
+
+            {% if his %}
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <div>
+                            <h2 class="h4 fw-bold mb-1">Listado de Historial de Acciones</h2>
+                            <p class="text-secondary small mb-0">Presentación de registros históricos de usuarios.</p>
+                        </div>
+                    </div>
+
+                    
+                    <div
+                        id="paginacionHistorial"
+                        class="d-flex justify-content-center mt-4  mb-4">
+                    </div>
+                    
+
+                    <div class="table-responsive">
+                        <table class="table table-elegant">
+                            <thead>
+                                <tr>
+                                    <th class="align-middle">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span>#</span>
+                                            <a href="/listado_historial/1/" class="btn-action btn-action-edit" title="Orden Ascendente">
+                                                <i class="bi bi-arrow-up-circle-fill fs-3"></i>
+                                            </a>
+                                            <a href="/listado_historial/2/" class="btn-action btn-action-edit" title="Orden Descendente">
+                                                <i class="bi bi-arrow-down-circle-fill fs-3"></i>
+                                            </a>
+                                        </div>
+                                    </th>
+                                    <th class="align-middle">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span>DESCRIPCION</span>
+                                            <a href="/listado_historial/3/" class="btn-action btn-action-edit" title="Orden Ascendente">
+                                                <i class="bi bi-arrow-up-circle-fill fs-3"></i>
+                                            </a>
+                                            <a href="/listado_historial/4/" class="btn-action btn-action-edit" title="Orden Descendente">
+                                                <i class="bi bi-arrow-down-circle-fill fs-3"></i>
+                                            </a>
+                                        </div>
+                                    </th>
+                                    <th class="align-middle">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span>TABLA AFECTADA</span>
+                                            <a href="/listado_historial/5/" class="btn-action btn-action-edit" title="Orden Ascendente">
+                                                <i class="bi bi-arrow-up-circle-fill fs-3"></i>
+                                            </a>
+                                            <a href="/listado_historial/6/" class="btn-action btn-action-edit" title="Orden Descendente">
+                                                <i class="bi bi-arrow-down-circle-fill fs-3"></i>
+                                            </a>
+                                        </div>
+                                    </th>
+                                    <th class="align-middle">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span>FECHA / HORA</span>
+                                            <a href="/listado_historial/7/" class="btn-action btn-action-edit" title="Orden Ascendente">
+                                                <i class="bi bi-arrow-up-circle-fill fs-3"></i>
+                                            </a>
+                                            <a href="/listado_historial/8/" class="btn-action btn-action-edit" title="Orden Descendente">
+                                                <i class="bi bi-arrow-down-circle-fill fs-3"></i>
+                                            </a>
+                                        </div>
+                                    </th>
+                                    <th class="align-middle">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span>USUARIO RESPONSABLE</span>
+                                            <a href="/listado_historial/9/" class="btn-action btn-action-edit" title="Orden Ascendente">
+                                                <i class="bi bi-arrow-up-circle-fill fs-3"></i>
+                                            </a>
+                                            <a href="/listado_historial/10/" class="btn-action btn-action-edit" title="Orden Descendente">
+                                                <i class="bi bi-arrow-down-circle-fill fs-3"></i>
+                                            </a>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaHistorial">
+
+                                {% for x in his %}
+
+                                    <tr>
+                                        <td class="text-center">
+                                            <span class="id-pill">#{{ x.id }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-secondary">{{ x.descripcion_historial }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-secondary">{{ x.tabla_afectada_historial }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-secondary">{{ x.fecha_hora_historial }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-secondary">{{ x.usuario.nombre }}</span>
+                                        </td>
+                                    </tr>
+                                
+                                {% endfor %}
+                                
+                            </tbody>
+                        </table>
+
+                    </div> <!-- Cierra el <div class="table-responsive"></div> -->
+
+                    
+                    
+                    
+                    <script>
+                        $(document).ready(function() {
+
+                            // Obtener todas las filas generadas por Django.
+                            const filas = $("#tablaHistorial tr").toArray();
+
+                            // Inicializar la paginación.
+                            $("#paginacionHistorial").pagination({
+                                dataSource: filas,
+                                pageSize: 5,
+                                pageRange: 2,
+                                showSizeChanger: true,
+
+                                showGoInput: true,
+                                showGoButton: true,
+                                goButtonText: "Ir",
+                                
+                                showPrevious: true,
+                                showNext: true,
+                                prevText: "Anterior",
+                                nextText: "Siguiente",
+                                callback: function(data, pagination) {
+                                    // Limpiar las filas visibles.
+                                    $("#tablaHistorial").empty();
+                                    // Incorporar las filas de la página actual.
+                                    $("#tablaHistorial").append(data);
+                                }
+                            });
+                        });
+                    </script>
+
+
+
+
+                    
+
+                </div>
+
+            {% else %}
+                <div class="empty-state-card">
+                    <div class="empty-icon">
+                        <i class="bi bi-inbox"></i>
+                    </div>
+                    <h4 class="fw-bold mb-2">¡ No Hay Registros Para Mostrar !</h4>
+                    <p class="text-secondary mb-4">
+                        Aún no se han ingresado solicitudes de soporte en el sistema. Crea el primer ticket para comenzar.
+                    </p>
+                </div>
+            {% endif %}
+            
+        </main>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
+    </body>
+</html>
