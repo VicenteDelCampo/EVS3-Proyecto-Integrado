@@ -3,46 +3,57 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Parque Safari</title>
+    <title>Login - Parque Safari</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.min.css">
     <style>
-        body { background-color: #f5f0e8; color: #2d1b00; font-family: 'Lato', sans-serif; }
-        .navbar-safari { background-color: #2d1b00; }
-        .navbar-safari .navbar-brand { color: #e8a020 !important; font-weight: 700; letter-spacing: 0.5px; transition: color 0.2s ease; }
-        .navbar-safari .navbar-brand:hover { color: #c4850a !important; }
-        .navbar-safari .nav-link { color: #f5f0e8 !important; transition: color 0.2s ease; }
-        .navbar-safari .nav-link:hover { color: #e8a020 !important; }
-        .btn-ingresar {
-            background-color: #e8a020;
+        body {
+            background-color: #f5f0e8;
             color: #2d1b00;
+            font-family: 'Lato', sans-serif;
+            min-height: 100vh;
+        }
+        .navbar-safari { background-color: #2d1b00; }
+        .navbar-safari .navbar-brand { color: #e8a020 !important; font-weight: 700; }
+        .navbar-safari .nav-link { color: #f5f0e8 !important; }
+        .navbar-safari .nav-link:hover { color: #e8a020 !important; }
+        .login-card {
+            background-color: #fffdf7;
+            border: 1px solid #ddd0b8;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(45,27,0,0.12);
+        }
+        .form-control:focus {
+            border-color: #c4850a;
+            box-shadow: 0 0 0 0.2rem rgba(196, 133, 10, 0.2);
+        }
+        .form-control {
+            border-radius: 10px;
+            border-color: #ddd0b8;
+            padding: 0.65rem 1rem;
+        }
+        .btn-login {
+            background-color: #8b5e1a;
             border: none;
             border-radius: 20px;
+            color: #fff;
             font-weight: 600;
-            padding: 0.45rem 1.4rem;
+            padding: 0.6rem 1.5rem;
             transition: background-color 0.2s ease, transform 0.2s ease;
         }
-        .btn-ingresar:hover {
+        .btn-login:hover {
             background-color: #c4850a;
             color: #fff;
             transform: translateY(-1px);
         }
-        .hero-img { width: 100%; display: block; }
-        .welcome-card {
-            background-color: #fffdf7;
-            border: 1px solid #ddd0b8;
-            border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(45,27,0,0.08);
-            transition: box-shadow 0.2s ease;
-        }
-        .welcome-card:hover { box-shadow: 0 8px 24px rgba(45,27,0,0.14); }
     </style>
 </head>
 <body>
-    {% load static %}
     <div class="fs-5 fw-bold">
         <nav class="navbar navbar-expand-lg p-3 navbar-safari">
             <div class="container-fluid">
@@ -53,32 +64,69 @@
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#"></a>
+                            <a class="nav-link" href="/">Inicio</a>
                         </li>
                     </ul>
-                    <a href="mostrar_login/" class="btn btn-ingresar">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar
-                    </a>
                 </div>
             </div>
         </nav>
     </div>
 
-    <div class="container-fluid px-0">
-        <img src="{% static 'imagenes/ps.avif' %}" alt="Parque Safari" class="hero-img">
-    </div>
+    {% if r %}
+        <script>
+            Swal.fire({
+                title: "Acción OK",
+                text: "{{ r }}",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#8b5e1a",
+                timer: 3000
+            });
+        </script>
+    {% endif %}
 
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="welcome-card p-4 p-md-5 text-center">
-                    <div class="mb-3" style="font-size: 3rem;">🦁</div>
-                    <h2 class="fw-bold mb-2" style="color: #2d1b00;">Bienvenido a Parque Safari</h2>
-                    <p class="text-secondary mb-4" style="color: #6b4c1e !important;">Sistema integral de punto de venta para la gestión de ventas, mesas, pedidos y más. Accede con tu usuario para comenzar.</p>
-                    <a href="mostrar_login/" class="btn btn-ingresar btn-lg px-5">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar al Sistema
-                    </a>
+    {% if r2 %}
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: "{{ r2 }}",
+                icon: "error",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#c0392b",
+                timer: 3000
+            });
+        </script>
+    {% endif %}
+
+    <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="login-card p-5" style="width: 400px;">
+            <div class="text-center mb-4">
+                <div style="font-size: 2.8rem; line-height: 1;">🦁</div>
+                <h3 class="fw-bold mt-2 mb-0" style="color: #2d1b00;">Parque Safari</h3>
+                <p class="text-secondary small mt-1">Ingresa tus credenciales para continuar</p>
+            </div>
+            <form action="/login/" method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" style="color: #6b4c1e;">
+                        <i class="bi bi-person me-1"></i>Nombre de Usuario
+                    </label>
+                    <input type="text" name="txtusu" class="form-control" placeholder="Ingrese Nombre Trabajador" required>
                 </div>
+                <div class="mb-4">
+                    <label class="form-label small fw-semibold" style="color: #6b4c1e;">
+                        <i class="bi bi-lock me-1"></i>Contraseña
+                    </label>
+                    <input type="password" name="txtpas" class="form-control" placeholder="Ingrese Contraseña" required>
+                </div>
+                <button type="submit" id="btnlogin" class="btn btn-login w-100">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
+                </button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="/" class="small text-secondary text-decoration-none">
+                    <i class="bi bi-arrow-left me-1"></i>Volver al inicio
+                </a>
             </div>
         </div>
     </div>
