@@ -1,0 +1,31 @@
+<style>
+        body { background-color: #f5f0e8; color: #2d1b00; font-family: 'Lato', sans-serif; }
+        .navbar-safari { background-color: #2d1b00; }
+        .navbar-safari .navbar-brand { color: #e8a020 !important; font-weight: 700; letter-spacing: 0.5px; transition: color 0.2s ease; }
+        .navbar-safari .navbar-brand:hover { color: #c4850a !important; }
+        .navbar-safari .nav-link { color: #f5f0e8 !important; transition: color 0.2s ease; }
+        .navbar-safari .nav-link:hover { color: #e8a020 !important; }
+        .btn-ingresar {
+            background-color: #e8a020;
+            color: #2d1b00;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            padding: 0.45rem 1.4rem;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .btn-ingresar:hover {
+            background-color: #c4850a;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .hero-img { width: 100%; display: block; }
+        .welcome-card {
+            background-color: #fffdf7;
+            border: 1px solid #ddd0b8;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(45,27,0,0.08);
+            transition: box-shadow 0.2s ease;
+        }
+        .welcome-card:hover { box-shadow: 0 8px 24px rgba(45,27,0,0.14); }
+    </style>
