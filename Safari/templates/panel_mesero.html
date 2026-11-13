@@ -1,42 +1,225 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="es">
     <head>
+        {% load static %}
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Panel Mesero</title>
-        <meta name="description" content="">
+        <title>Panel de Mesero | Parque Safari</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --safari-nav: #2b1d03;
+                --safari-bg: #f4efe6;
+                --safari-card: #fdfbf7;
+                --safari-border: #e6dec8;
+                --safari-icon-bg: #f3e6d0;
+                --safari-btn: #84530d;
+                --safari-btn-hover: #6b4209;
+                --safari-gold: #d9821b;
+                --safari-text: #231709;
+                --safari-muted: #6e5a44;
+            }
+            body {
+                background-color: var(--safari-bg) !important;
+                color: var(--safari-text);
+                font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            .navbar-safari {
+                background-color: var(--safari-nav) !important;
+                padding: 0.85rem 1.75rem;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+            }
+            .brand-safari {
+                color: var(--safari-gold) !important;
+                font-weight: 700;
+                font-size: 1.25rem;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .brand-safari:hover {
+                color: #f39c2b !important;
+            }
+            .user-nav-label {
+                color: #ffffff;
+                font-weight: 700;
+                font-size: 1.15rem;
+                margin-left: 1rem;
+            }
+            .btn-logout-safari {
+                background-color: rgba(217, 130, 27, 0.08);
+                border: 1px solid #9c6317;
+                color: #e59a3c !important;
+                border-radius: 50px;
+                padding: 0.4rem 1.15rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                transition: all 0.2s ease;
+            }
+            .btn-logout-safari:hover {
+                background-color: #84530d;
+                color: #ffffff !important;
+                border-color: #84530d;
+            }
+            .btn-back-safari {
+                background-color: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(230, 222, 200, 0.35);
+                color: #fdfbf7 !important;
+                border-radius: 50px;
+                padding: 0.38rem 1rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.35rem;
+                transition: all 0.2s ease;
+            }
+            .btn-back-safari:hover {
+                background-color: var(--safari-gold);
+                color: #231709 !important;
+                border-color: var(--safari-gold);
+            }
+            .safari-card {
+                background-color: var(--safari-card);
+                border: 1px solid var(--safari-border);
+                border-radius: 16px;
+                box-shadow: 0 6px 20px rgba(43, 29, 3, 0.04);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .safari-card-hover:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 28px rgba(43, 29, 3, 0.09);
+            }
+            .safari-icon-box {
+                width: 52px;
+                height: 52px;
+                background-color: var(--safari-icon-bg);
+                color: var(--safari-btn);
+                border-radius: 12px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.45rem;
+                margin-bottom: 1.1rem;
+            }
+            .btn-safari-pill {
+                background-color: var(--safari-btn);
+                color: #ffffff !important;
+                border: none;
+                border-radius: 50px;
+                padding: 0.42rem 1.35rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.4rem;
+                transition: background-color 0.2s ease, transform 0.15s ease;
+            }
+            .btn-safari-pill:hover {
+                background-color: var(--safari-btn-hover);
+                color: #ffffff !important;
+                transform: translateY(-1px);
+            }
+            .btn-safari-submit {
+                background-color: var(--safari-btn);
+                color: #ffffff !important;
+                border: none;
+                border-radius: 10px;
+                padding: 0.65rem 1.4rem;
+                font-weight: 600;
+                transition: background-color 0.2s ease;
+            }
+            .btn-safari-submit:hover {
+                background-color: var(--safari-btn-hover);
+                color: #ffffff !important;
+            }
+            .safari-divider {
+                border-bottom: 1px solid #dfd5c0;
+                margin-top: 1.2rem;
+                margin-bottom: 2rem;
+            }
+            .form-control, .form-select {
+                background-color: #ffffff;
+                border: 1px solid #dcd2be;
+                border-radius: 10px;
+                padding: 0.6rem 0.9rem;
+                color: var(--safari-text);
+            }
+            .form-control:focus, .form-select:focus {
+                border-color: var(--safari-gold);
+                box-shadow: 0 0 0 0.2rem rgba(217, 130, 27, 0.18);
+            }
+            .form-label-safari {
+                color: #6b4c1b;
+                font-weight: 600;
+                font-size: 0.84rem;
+                margin-bottom: 0.35rem;
+            }
+            .table-safari thead th {
+                background-color: #f3ece0 !important;
+                color: #6e5a44 !important;
+                font-size: 0.78rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 1px solid var(--safari-border);
+                padding: 14px 12px;
+            }
+            .table-safari tbody td {
+                border-bottom: 1px solid #f0e9dc;
+                padding: 13px 12px;
+                color: var(--safari-text);
+            }
+            .btn-action {
+                width: 36px;
+                height: 36px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 8px;
+                border: none;
+                text-decoration: none;
+                transition: all 0.2s ease-in-out;
+            }
+            .btn-action-edit { background-color: #f3e6d0; color: #84530d; }
+            .btn-action-edit:hover { background-color: #e5d1af; color: #5c3906; }
+            .btn-action-delete { background-color: #fde8e8; color: #c81e1e; }
+            .btn-action-delete:hover { background-color: #fbd5d5; color: #9b1c1c; }
+            .badge-safari {
+                background-color: #f3e6d0;
+                color: #6b4209;
+                font-weight: 600;
+                padding: 0.4em 0.85em;
+                border-radius: 50px;
+            }
+        </style>
 
-    </head>
-    <body>
-        <div class="fs-5 fw-bold">
-            <nav class="navbar navbar-expand-lg p-3 " style="background-color: #25a1b9;">
-            <div class="container-fluid" >
-                <a class="navbar-brand link-light" href="/"> &lt;- Volver</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <span class="nav-link link-light">Usuario: {{ nomUsuario }}</span>
-                    </li>
-                </ul>
-              </div>
-            </div>
-            </nav>  
-        </div>
-
+        
         <script>
             const botonCerrarSesion = () => {
                 Swal.fire({
-                    title: "Pregunta",
-                    text: "¿Estás Seguro(a) de Querer Cerrar la Sesión?",
+                    title: "Cerrar Sesión",
+                    text: "¿Estás seguro(a) de querer cerrar la sesión?",
                     icon: "question",
                     showCancelButton: true,
-                    confirmButtonColor: "#4f46e5",
+                    confirmButtonColor: "#84530d",
                     cancelButtonColor: "#94a3b8",
                     confirmButtonText: "Aceptar",
                     cancelButtonText: "Cancelar"
@@ -48,37 +231,70 @@
             }
         </script>
 
-
-
-        <h1 class="text-center mt-3">Panel Mesero</h1>
-
-        <div class="container mt-4">
-            <div class="row">
-            <div class="col-sm-6 mb-3 mb-sm-0">
-                <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title text-center">Administrar Mesas</h5>
-                    <p class="card-text text-center">Permite Agregar, eliminar y modificar las Mesas.</p>
-                    <a href="/administrar_mesas/" class="btn btn-primary d-grid gap-2 col-4 mx-auto">Ir</a>
+    </head>
+    <body>
+        
+        <nav class="navbar navbar-expand-lg navbar-safari sticky-top">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center">
+                    <span class="brand-safari">🦁 Parque Safari</span>
+                    <span class="user-nav-label">Usuario: {{ nomUsuario|default:"ADMIN" }}</span>
                 </div>
+                <div class="ms-auto d-flex align-items-center gap-2">
+                    <button type="button" onclick="botonCerrarSesion()" class="btn-logout-safari"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</button>
                 </div>
             </div>
-            <div class="col-sm-6">
-                <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title text-center">Registrar Pedido</h5>
-                    <p class="card-text text-center">Permite registrar un pedido.</p>
-                    <a href="/registrar_pedido/" class="btn btn-primary d-grid gap-2 col-4 mx-auto">Ir</a>
-                </div>
-                </div>
+        </nav>
+
+
+        <div class="container py-5" style="max-width: 900px;">
+            <div class="mb-2">
+                <h1 class="fw-bold d-flex align-items-center gap-2 mb-1" style="font-size: 2.1rem; color: #231709;">
+                    <i class="bi bi-cup-hot" style="color: #c97a16;"></i>
+                    <span>Panel de Atención de Mesas</span>
+                </h1>
+                <p class="mb-0" style="color: #6e5a44; font-size: 0.95rem;">
+                    Bienvenido, <strong>{{ nomUsuario|default:"MESERO" }}</strong>. Selecciona una opción para gestionar mesas y pedidos.
+                </p>
             </div>
+
+            <div class="safari-divider"></div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="safari-card safari-card-hover p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="safari-icon-box">
+                                <i class="bi bi-journal-plus"></i>
+                            </div>
+                            <h5 class="fw-bold mb-2">Tomar Pedido de Mesa</h5>
+                            <p class="small mb-4" style="color: #6e5a44;">Permite asignar productos y menús a una mesa activa para su posterior cobro en caja.</p>
+                        </div>
+                        <div>
+                            <a href="/registrar_pedido/" class="btn-safari-pill">
+                                <span>Ir</span> <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="safari-card safari-card-hover p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="safari-icon-box">
+                                <i class="bi bi-layout-wtf"></i>
+                            </div>
+                            <h5 class="fw-bold mb-2">Administrar Mesas</h5>
+                            <p class="small mb-4" style="color: #6e5a44;">Permite consultar, registrar y cambiar el estado de ocupación de las mesas del sector.</p>
+                        </div>
+                        <div>
+                            <a href="/administrar_mesas/" class="btn-safari-pill">
+                                <span>Ir</span> <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-
-
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
- 
     </body>
 </html>

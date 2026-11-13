@@ -3,27 +3,190 @@
     <head>
         {% load static %}
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Administrar Mesas</title>
+        <title>Administrar Mesas | Parque Safari</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         
-        <script src="{% static "alertify/alertify.min.js" %}"></script>
-        <link rel="stylesheet" href="{% static "alertify/css/alertify.min.css" %}" />
-        <link rel="stylesheet" href="{% static "alertify/css/themes/default.min.css" %}" />
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.31/dist/sweetalert2.all.min.js"></script>
-        <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.31/dist/sweetalert2.min.css" rel="stylesheet">
-        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <style>
-            body {
-                background-color: #e8ecf2 !important;
-                color: #1e293b;
-                font-family: sans-serif;
+            :root {
+                --safari-nav: #2b1d03;
+                --safari-bg: #f4efe6;
+                --safari-card: #fdfbf7;
+                --safari-border: #e6dec8;
+                --safari-icon-bg: #f3e6d0;
+                --safari-btn: #84530d;
+                --safari-btn-hover: #6b4209;
+                --safari-gold: #d9821b;
+                --safari-text: #231709;
+                --safari-muted: #6e5a44;
             }
-
-
+            body {
+                background-color: var(--safari-bg) !important;
+                color: var(--safari-text);
+                font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            .navbar-safari {
+                background-color: var(--safari-nav) !important;
+                padding: 0.85rem 1.75rem;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+            }
+            .brand-safari {
+                color: var(--safari-gold) !important;
+                font-weight: 700;
+                font-size: 1.25rem;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .brand-safari:hover {
+                color: #f39c2b !important;
+            }
+            .user-nav-label {
+                color: #ffffff;
+                font-weight: 700;
+                font-size: 1.15rem;
+                margin-left: 1rem;
+            }
+            .btn-logout-safari {
+                background-color: rgba(217, 130, 27, 0.08);
+                border: 1px solid #9c6317;
+                color: #e59a3c !important;
+                border-radius: 50px;
+                padding: 0.4rem 1.15rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                transition: all 0.2s ease;
+            }
+            .btn-logout-safari:hover {
+                background-color: #84530d;
+                color: #ffffff !important;
+                border-color: #84530d;
+            }
+            .btn-back-safari {
+                background-color: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(230, 222, 200, 0.35);
+                color: #fdfbf7 !important;
+                border-radius: 50px;
+                padding: 0.38rem 1rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.35rem;
+                transition: all 0.2s ease;
+            }
+            .btn-back-safari:hover {
+                background-color: var(--safari-gold);
+                color: #231709 !important;
+                border-color: var(--safari-gold);
+            }
+            .safari-card {
+                background-color: var(--safari-card);
+                border: 1px solid var(--safari-border);
+                border-radius: 16px;
+                box-shadow: 0 6px 20px rgba(43, 29, 3, 0.04);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .safari-card-hover:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 28px rgba(43, 29, 3, 0.09);
+            }
+            .safari-icon-box {
+                width: 52px;
+                height: 52px;
+                background-color: var(--safari-icon-bg);
+                color: var(--safari-btn);
+                border-radius: 12px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.45rem;
+                margin-bottom: 1.1rem;
+            }
+            .btn-safari-pill {
+                background-color: var(--safari-btn);
+                color: #ffffff !important;
+                border: none;
+                border-radius: 50px;
+                padding: 0.42rem 1.35rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.4rem;
+                transition: background-color 0.2s ease, transform 0.15s ease;
+            }
+            .btn-safari-pill:hover {
+                background-color: var(--safari-btn-hover);
+                color: #ffffff !important;
+                transform: translateY(-1px);
+            }
+            .btn-safari-submit {
+                background-color: var(--safari-btn);
+                color: #ffffff !important;
+                border: none;
+                border-radius: 10px;
+                padding: 0.65rem 1.4rem;
+                font-weight: 600;
+                transition: background-color 0.2s ease;
+            }
+            .btn-safari-submit:hover {
+                background-color: var(--safari-btn-hover);
+                color: #ffffff !important;
+            }
+            .safari-divider {
+                border-bottom: 1px solid #dfd5c0;
+                margin-top: 1.2rem;
+                margin-bottom: 2rem;
+            }
+            .form-control, .form-select {
+                background-color: #ffffff;
+                border: 1px solid #dcd2be;
+                border-radius: 10px;
+                padding: 0.6rem 0.9rem;
+                color: var(--safari-text);
+            }
+            .form-control:focus, .form-select:focus {
+                border-color: var(--safari-gold);
+                box-shadow: 0 0 0 0.2rem rgba(217, 130, 27, 0.18);
+            }
+            .form-label-safari {
+                color: #6b4c1b;
+                font-weight: 600;
+                font-size: 0.84rem;
+                margin-bottom: 0.35rem;
+            }
+            .table-safari thead th {
+                background-color: #f3ece0 !important;
+                color: #6e5a44 !important;
+                font-size: 0.78rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 1px solid var(--safari-border);
+                padding: 14px 12px;
+            }
+            .table-safari tbody td {
+                border-bottom: 1px solid #f0e9dc;
+                padding: 13px 12px;
+                color: var(--safari-text);
+            }
             .btn-action {
                 width: 36px;
                 height: 36px;
@@ -35,52 +198,28 @@
                 text-decoration: none;
                 transition: all 0.2s ease-in-out;
             }
-            .btn-action-edit {
-                background-color: #ecfdf5;
-                color: #10b981;
-            }
-            .btn-action-edit:hover {
-                background-color: #d1fae5;
-                color: #059669;
-            }
-            .btn-action-delete {
-                background-color: #fef2f2;
-                color: #ef4444;
-            }
-            .btn-action-delete:hover {
-                background-color: #fee2e2;
-                color: #dc2626;
+            .btn-action-edit { background-color: #f3e6d0; color: #84530d; }
+            .btn-action-edit:hover { background-color: #e5d1af; color: #5c3906; }
+            .btn-action-delete { background-color: #fde8e8; color: #c81e1e; }
+            .btn-action-delete:hover { background-color: #fbd5d5; color: #9b1c1c; }
+            .badge-safari {
+                background-color: #f3e6d0;
+                color: #6b4209;
+                font-weight: 600;
+                padding: 0.4em 0.85em;
+                border-radius: 50px;
             }
         </style>
 
-
-        <script>
-            const botonEliminar = (id) => {
-                Swal.fire({
-                    title: "Eliminar Mesa",
-                    text: "¿Estás seguro de que deseas eliminar el registro con ID (" + id + ")?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#4f46e5",
-                    cancelButtonColor: "#94a3b8",
-                    confirmButtonText: "Sí, eliminar",
-                    cancelButtonText: "Cancelar"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = "/eliminar_mesa/" + id + "/";
-                    }
-                });
-            }
-        </script>
-
+        
         <script>
             const botonCerrarSesion = () => {
                 Swal.fire({
-                    title: "Pregunta",
-                    text: "¿Estás Seguro(a) de Querer Cerrar la Sesión?",
+                    title: "Cerrar Sesión",
+                    text: "¿Estás seguro(a) de querer cerrar la sesión?",
                     icon: "question",
                     showCancelButton: true,
-                    confirmButtonColor: "#4f46e5",
+                    confirmButtonColor: "#84530d",
                     cancelButtonColor: "#94a3b8",
                     confirmButtonText: "Aceptar",
                     cancelButtonText: "Cancelar"
@@ -92,133 +231,134 @@
             }
         </script>
 
+        <script>
+            const botonEliminar = (id) => {
+                Swal.fire({
+                    title: "Eliminar Mesa",
+                    text: "¿Estás seguro(a) de eliminar la mesa con ID (" + id + ")?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#84530d",
+                    cancelButtonColor: "#94a3b8",
+                    confirmButtonText: "Sí, eliminar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/eliminar_mesas/" + id + "/";
+                    }
+                });
+            }
+        </script>
     </head>
     <body>
-
-        <div class="fs-5 fw-bold ">
-            <nav class="navbar navbar-expand-lg p-3" style="background-color: #25a1b9;">
-            <div class="container-fluid" >
-                <a class="navbar-brand link-light"  href="/mostrar_login/"> <- Volver</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon">Usuario: {{ nomUsuario }}</span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <span class="nav-link link-light">Usuario: {{ nomUsuario }}</span>
-                    </li>
-                </ul>
-              </div>
+        
+        <nav class="navbar navbar-expand-lg navbar-safari sticky-top">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center">
+                    {% if claseUsuario == "MESERO"%}
+                        <a  class="btn-back-safari me-3"  href="/panel_mesero/"><i class="bi bi-arrow-left"></i> Volver</a>
+                    {% endif %}
+                    {% if claseUsuario == "ADMINISTRADOR"%}
+                        <a  class="btn-back-safari me-3"  href="/panel_admin/"><i class="bi bi-arrow-left"></i> Volver</a>
+                    {% endif %}
+                    <span class="brand-safari">🦁 Parque Safari</span>
+                    <span class="user-nav-label">Usuario: {{ nomUsuario|default:"ADMIN" }}</span>
+                </div>
+                <div class="ms-auto d-flex align-items-center gap-2">
+                    <button type="button" onclick="botonCerrarSesion()" class="btn-logout-safari"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</button>
+                </div>
             </div>
-            </nav>  
-        </div>
+        </nav>
 
-        <div class="container py-4" style="max-width: 900px;">
-            
-            <div class="mb-4 pb-2 border-bottom">
-                <h2 class="h4 fw-bold mb-1" style="color: var(--text-primary);">Gestión de Mesas</h2>
-                <p class="text-muted small mb-0">Crea nuevas mesas o administra las existentes en la base de datos.</p>
+
+        <div class="container py-5" style="max-width: 960px;">
+            {% if r %} <script>Swal.fire({title: "Éxito", text: "{{ r }}", icon: "success", confirmButtonColor: "#84530d"});</script> {% endif %}
+            {% if r2 %} <script>Swal.fire({title: "Atención", text: "{{ r2 }}", icon: "error", confirmButtonColor: "#84530d"});</script> {% endif %}
+
+            <div class="mb-2">
+                <h2 class="fw-bold d-flex align-items-center gap-2 mb-1">
+                    <i class="bi bi-layout-wtf" style="color: #c97a16;"></i>
+                    <span>Gestión de Mesas</span>
+                </h2>
+                <p class="small mb-0" style="color: #6e5a44;">Permite agregar, modificar y eliminar las mesas asociadas a los distintos puntos de venta.</p>
             </div>
+            <div class="safari-divider"></div>
 
-            {% if r %}
-                <script>
-                    alertify.success('{{ r }}')
-                </script>
-            {% endif %}
-
-
-            {% if r2 %}
-                <script>
-                    alertify.error('{{ r2 }}')
-                </script>
-            {% endif %}
-
-            <!-- Card de Registro -->
-            <div class="bg-white p-4 mb-4" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-                <h3 class="h6 fw-semibold mb-3 text-secondary" ><i class="bi bi-plus-circle me-1"></i> Registrar Nueva Mesa</h3>
+            <div class="safari-card p-4 mb-4">
+                <h3 class="h6 fw-bold mb-3" style="color: #6b4c1b;"><i class="bi bi-plus-circle me-1"></i> Registrar Nueva Mesa</h3>
                 <form action="/registrar_mesa/" method="post">
                     {% csrf_token %}
-                    <div class="row g-2">
-                        <div class="col-md-5">
-                            <label class="form-label small text-secondary fw-semibold">Nombre de la Mesa</label>
-                            <input class="form-control" type="text" name="txtnommes" placeholder="Nombre del Area y numero de la mesa" required style="border-color: gray; border-radius: 8px; padding: 0.6rem 0.9rem;"/>
-                        </div>
-
+                    <div class="row g-3 align-items-end">
                         <div class="col-md-4">
-                            <label class="form-label small text-secondary fw-semibold">Punto de Venta</label>
+                            <label class="form-label-safari">Nombre / Número de Mesa</label>
+                            <input class="form-control" type="text" name="txtnommes" placeholder="Ej: Mesa 01" maxlength="30" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label-safari">Punto de Venta</label>
                             <select name="cbopunven" class="form-select" required>
-                                <option value="">Seleccione un punto...</option>
-                                {% for x in opciones_pdv %}
-                                    <option value="{{ x.id }}">{{x.nombre}}</option>
+                                <option value="">Seleccione PDV...</option>
+                                {% for p in opciones_pdv %}
+                                    <option value="{{ p.id }}">{{ p.nombre }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-
                         <div class="col-md-3">
-                            <label class="form-label small text-secondary fw-semibold">Estado</label>
+                            <label class="form-label-safari">Estado Inicial</label>
                             <select name="cboest" class="form-select" required>
-                                <option value="">Seleccione un estado...</option>
                                 <option value="LIBRE">LIBRE</option>
                                 <option value="OCUPADA">OCUPADA</option>
                             </select>
                         </div>
-
-                        <div class="col-12 text-end pt-2">
-                            <button class="btn btn-accent px-4 text-white" type="submit" style="background-color: #4f46e5; border-radius: 8px; padding: 0.6rem; border: none;">
-                                <i class="bi bi-check2-circle me-1"></i> Registrar Mesa
+                        <div class="col-md-2">
+                            <button class="btn-safari-submit w-100" type="submit">
+                                <i class="bi bi-check2-circle me-1"></i> Registrar
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
 
-
-
-
-            
-            <!-- Card de Listado -->
-            <div class="content-card p-0 overflow-hidden" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-                <div class="px-4 py-3 d-flex justify-content-between align-items-center bg-light-subtle" style="border-bottom: 1px solid #f1f5f9;">
-                    <span class="fw-semibold text-secondary small text-uppercase" style="color: #64748b; letter-spacing: 0.5px; font-size: 0.8rem;">Mesas Registradas</span>
+            <div class="safari-card p-0 overflow-hidden">
+                <div class="px-4 py-3" style="background-color: #efe6d5; border-bottom: 1px solid var(--safari-border);">
+                    <span class="fw-bold small text-uppercase" style="color: #6b4c1b; letter-spacing: 0.5px;">Mesas Registradas</span>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-custom text-center align-middle">
-                        <thead style="border-bottom: 1px solid #f1f5f9;">
-                            <tr >
-                                <th style="width: 15%;">ID</th>
-                                <th class="" style="width: 18%;">MESA</th>
-                                <th style="width: 18%;">PUNTO DE VENTA</th>
-                                <th class="" style="width: 18%;">ESTADO</th>
-                                <th style="width: 15%;">EDITAR</th>
-                                <th style="width: 15%;">ELIMINAR</th>
+                    <table class="table table-safari text-center align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>MESA</th>
+                                <th>PUNTO DE VENTA</th>
+                                <th>ESTADO</th>
+                                <th>EDITAR</th>
+                                <th>ELIMINAR</th>
                             </tr>
                         </thead>
-                        <tbody style="border-top: none;"    >
+                        <tbody>
                             {% for x in mesa %}
                                 <tr>
-                                    <td>{{x.id}}</td>
-                                    <td class="">{{x.nombre}}</td>
-                                    <td>{{x.pdv.nombre}}</td>
-                                    <td class="">{{x.estado}}</td>
+                                    <td class="fw-bold">#{{ x.id }}</td>
+                                    <td class="fw-semibold">{{ x.nombre }}</td>
+                                    <td>{{ x.pdv.nombre }}</td>
                                     <td>
-                                        <a href="/form_act_mes/{{ x.id }}" class="btn-action btn-action-edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
+                                        <span class="badge rounded-pill {% if x.estado == 'LIBRE' %}bg-success{% else %}bg-danger{% endif %} px-3 py-2">
+                                            {{ x.estado_mesa }}
+                                        </span>
                                     </td>
                                     <td>
-                                        <button onclick="botonEliminar({{x.id}})" type="submit" class="btn-action btn-action-delete">
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
+                                        <a href="/form_act_mes/{{ x.id }}/" class="btn-action btn-action-edit"><i class="bi bi-pencil"></i></a>
+                                    </td>
+                                    <td>
+                                        <button onclick="botonEliminar({{ x.id }})" type="button" class="btn-action btn-action-delete"><i class="bi bi-trash3"></i></button>
                                     </td>
                                 </tr>
+                            {% empty %}
+                                <tr><td colspan="6" class="py-4 text-muted">No hay mesas registradas.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

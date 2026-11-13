@@ -1,25 +1,225 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    {% load static %}
-    <meta charset="utf-8">
-    <title>Registrar Venta</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <style>
-        body { background-color: #e8ecf2 !important; color: #1e293b; font-family: sans-serif; }
-    </style>
-</head>
+    <head>
+        {% load static %}
+        <meta charset="utf-8">
+        <title>Registrar Ventas | Parque Safari</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --safari-nav: #2b1d03;
+                --safari-bg: #f4efe6;
+                --safari-card: #fdfbf7;
+                --safari-border: #e6dec8;
+                --safari-icon-bg: #f3e6d0;
+                --safari-btn: #84530d;
+                --safari-btn-hover: #6b4209;
+                --safari-gold: #d9821b;
+                --safari-text: #231709;
+                --safari-muted: #6e5a44;
+            }
+            body {
+                background-color: var(--safari-bg) !important;
+                color: var(--safari-text);
+                font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            .navbar-safari {
+                background-color: var(--safari-nav) !important;
+                padding: 0.85rem 1.75rem;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+            }
+            .brand-safari {
+                color: var(--safari-gold) !important;
+                font-weight: 700;
+                font-size: 1.25rem;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .brand-safari:hover {
+                color: #f39c2b !important;
+            }
+            .user-nav-label {
+                color: #ffffff;
+                font-weight: 700;
+                font-size: 1.15rem;
+                margin-left: 1rem;
+            }
+            .btn-logout-safari {
+                background-color: rgba(217, 130, 27, 0.08);
+                border: 1px solid #9c6317;
+                color: #e59a3c !important;
+                border-radius: 50px;
+                padding: 0.4rem 1.15rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                transition: all 0.2s ease;
+            }
+            .btn-logout-safari:hover {
+                background-color: #84530d;
+                color: #ffffff !important;
+                border-color: #84530d;
+            }
+            .btn-back-safari {
+                background-color: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(230, 222, 200, 0.35);
+                color: #fdfbf7 !important;
+                border-radius: 50px;
+                padding: 0.38rem 1rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.35rem;
+                transition: all 0.2s ease;
+            }
+            .btn-back-safari:hover {
+                background-color: var(--safari-gold);
+                color: #231709 !important;
+                border-color: var(--safari-gold);
+            }
+            .safari-card {
+                background-color: var(--safari-card);
+                border: 1px solid var(--safari-border);
+                border-radius: 16px;
+                box-shadow: 0 6px 20px rgba(43, 29, 3, 0.04);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .safari-card-hover:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 28px rgba(43, 29, 3, 0.09);
+            }
+            .safari-icon-box {
+                width: 52px;
+                height: 52px;
+                background-color: var(--safari-icon-bg);
+                color: var(--safari-btn);
+                border-radius: 12px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.45rem;
+                margin-bottom: 1.1rem;
+            }
+            .btn-safari-pill {
+                background-color: var(--safari-btn);
+                color: #ffffff !important;
+                border: none;
+                border-radius: 50px;
+                padding: 0.42rem 1.35rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.4rem;
+                transition: background-color 0.2s ease, transform 0.15s ease;
+            }
+            .btn-safari-pill:hover {
+                background-color: var(--safari-btn-hover);
+                color: #ffffff !important;
+                transform: translateY(-1px);
+            }
+            .btn-safari-submit {
+                background-color: var(--safari-btn);
+                color: #ffffff !important;
+                border: none;
+                border-radius: 10px;
+                padding: 0.65rem 1.4rem;
+                font-weight: 600;
+                transition: background-color 0.2s ease;
+            }
+            .btn-safari-submit:hover {
+                background-color: var(--safari-btn-hover);
+                color: #ffffff !important;
+            }
+            .safari-divider {
+                border-bottom: 1px solid #dfd5c0;
+                margin-top: 1.2rem;
+                margin-bottom: 2rem;
+            }
+            .form-control, .form-select {
+                background-color: #ffffff;
+                border: 1px solid #dcd2be;
+                border-radius: 10px;
+                padding: 0.6rem 0.9rem;
+                color: var(--safari-text);
+            }
+            .form-control:focus, .form-select:focus {
+                border-color: var(--safari-gold);
+                box-shadow: 0 0 0 0.2rem rgba(217, 130, 27, 0.18);
+            }
+            .form-label-safari {
+                color: #6b4c1b;
+                font-weight: 600;
+                font-size: 0.84rem;
+                margin-bottom: 0.35rem;
+            }
+            .table-safari thead th {
+                background-color: #f3ece0 !important;
+                color: #6e5a44 !important;
+                font-size: 0.78rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 1px solid var(--safari-border);
+                padding: 14px 12px;
+            }
+            .table-safari tbody td {
+                border-bottom: 1px solid #f0e9dc;
+                padding: 13px 12px;
+                color: var(--safari-text);
+            }
+            .btn-action {
+                width: 36px;
+                height: 36px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 8px;
+                border: none;
+                text-decoration: none;
+                transition: all 0.2s ease-in-out;
+            }
+            .btn-action-edit { background-color: #f3e6d0; color: #84530d; }
+            .btn-action-edit:hover { background-color: #e5d1af; color: #5c3906; }
+            .btn-action-delete { background-color: #fde8e8; color: #c81e1e; }
+            .btn-action-delete:hover { background-color: #fbd5d5; color: #9b1c1c; }
+            .badge-safari {
+                background-color: #f3e6d0;
+                color: #6b4209;
+                font-weight: 600;
+                padding: 0.4em 0.85em;
+                border-radius: 50px;
+            }
+        </style>
 
+        
         <script>
             const botonCerrarSesion = () => {
                 Swal.fire({
-                    title: "Pregunta",
-                    text: "¿Estás Seguro(a) de Querer Cerrar la Sesión?",
+                    title: "Cerrar Sesión",
+                    text: "¿Estás seguro(a) de querer cerrar la sesión?",
                     icon: "question",
                     showCancelButton: true,
-                    confirmButtonColor: "#4f46e5",
+                    confirmButtonColor: "#84530d",
                     cancelButtonColor: "#94a3b8",
                     confirmButtonText: "Aceptar",
                     cancelButtonText: "Cancelar"
@@ -31,90 +231,114 @@
             }
         </script>
 
-
-<body>
-
-    <div class="fs-5 fw-bold">
-        <nav class="navbar navbar-expand-lg p-3" style="background-color: #25a1b9;">
+    </head>
+    <body>
+        
+        <nav class="navbar navbar-expand-lg navbar-safari sticky-top">
             <div class="container-fluid">
-                <a class="navbar-brand link-light" href="/mostrar_login/"> &lt;- Volver</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarText">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><span class="nav-link link-light">Usuario: {{ nomUsuario }}</span></li>
-                    </ul>
+                <div class="d-flex align-items-center">
+                    <a href="/panel_cajero/" class="btn-back-safari me-3"><i class="bi bi-arrow-left"></i> Volver</a>
+                    <span class="brand-safari">🦁 Parque Safari</span>
+                    <span class="user-nav-label">Usuario: {{ nomUsuario|default:"ADMIN" }}</span>
+                </div>
+                <div class="ms-auto d-flex align-items-center gap-2">
+                    <button type="button" onclick="botonCerrarSesion()" class="btn-logout-safari"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</button>
                 </div>
             </div>
         </nav>
-    </div>
 
-    <div class="container py-4" style="max-width: 900px;">
-        <div class="mb-4 pb-2 border-bottom">
-            <h2 class="h4 fw-bold mb-1">Registrar Venta</h2>
-            <p class="text-muted small mb-0">Ingresa los productos, método de pago o asigna el fiado correspondiente.</p>
-        </div>
 
-        <div class="bg-white p-4" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-            <form action="" method="post">
-                {% csrf_token %}
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label small text-secondary fw-semibold">Punto de Venta / Caja</label>
-                        <select name="cbopunto" class="form-select" required>
-                            <option value="">Seleccione caja...</option>
-                            {% for p in puntos %}
-                                <option value="{{ p.id }}">{{ p.nombre }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+        <div class="container py-5" style="max-width: 980px;">
+            {% if r %} <script>Swal.fire({title: "Venta Procesada", text: "{{ r }}", icon: "success", confirmButtonColor: "#84530d"});</script> {% endif %}
 
-                    <div class="col-md-6">
-                        <label class="form-label small text-secondary fw-semibold">Tipo de Comprobante</label>
-                        <select name="" class="form-select" required>
-                            <option value="BOLETA">Boleta Electrónica</option>
-                            <option value="FACTURA">Factura</option>
-                            <option value="TICKET_INTERNO">Ticket de Control Interno</option>
-                        </select>
-                    </div>
+            <div class="mb-2">
+                <h2 class="fw-bold d-flex align-items-center gap-2 mb-1">
+                    <i class="bi bi-cart-check" style="color: #c97a16;"></i>
+                    <span>Terminal de Ventas en Caja</span>
+                </h2>
+                <p class="small mb-0" style="color: #6e5a44;">Realiza ventas directas en barra o cierra el cobro de mesas ocupadas.</p>
+            </div>
+            <div class="safari-divider"></div>
 
-                    <div class="col-md-6">
-                        <label class="form-label small text-secondary fw-semibold">Método de Pago</label>
-                        <select name="" class="form-select" required>
-                            <option value="EFECTIVO">Efectivo</option>
-                            <option value="DEBITO">Tarjeta Débito</option>
-                            <option value="CREDITO">Tarjeta Crédito</option>
-                            <option value="FIADO">Fiado a Trabajador</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label small text-secondary fw-semibold">Trabajador (si aplica fiado)</label>
-                        <select name="" class="form-select">
-                            <option value="">No aplica / Ninguno</option>
-                            <option value="">Trabajador</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-12">
-                        <label class="form-label small text-secondary fw-semibold">Comentarios / Observaciones del Pedido</label>
-                        <input type="text" name="txtcomentario" class="form-control" placeholder="Ej: Sin cebolla, extra salsa, llevar para las 14:00...">
-                    </div>
-
-                    <div class="col-12 pt-3 border-top d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="text-secondary small">Total a cobrar:</span>
-                            <span class="fs-4 fw-bold text-dark ms-2">$0</span>
+            <div class="safari-card p-4 mb-4">
+                <h3 class="h6 fw-bold mb-3" style="color: #6b4c1b;"><i class="bi bi-bag-plus me-1"></i> 1. Venta Inmediata en Barra / Mostrador</h3>
+                <form action="/registrar_ventas/" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="tipo_accion" value="venta_barra">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label-safari">Punto de Venta</label>
+                            <select name="cbopdv" class="form-select" required>
+                                {% for p in puntos %}
+                                    <option value="{{ p.id }}">{{ p.nombre }}</option>
+                                {% empty %}
+                                    <option value="">Cree un Punto de Venta primero</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                        <button type="submit" class="btn text-white px-4" style="background-color: #4f46e5; border-radius: 8px; padding: 0.6rem; border: none;">
-                            <i class="bi bi-printer me-1"></i> Generar Venta y Ticket
-                        </button>
+                        <div class="col-md-5">
+                            <label class="form-label-safari">Seleccionar Producto</label>
+                            <select name="cboproducto" class="form-select" required>
+                                {% for prod in productos %}
+                                    <option value="{{ prod.id }}">{{ prod.nombre }} - ${{ prod.precio }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label-safari">Cant.</label>
+                            <input type="number" name="txtcantidad" value="1" min="1" class="form-control" required>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn-safari-submit w-100">
+                                <i class="bi bi-cash me-1"></i> Cobrar
+                            </button>
+                        </div>
                     </div>
+                </form>
+            </div>
+
+            <div class="safari-card p-0 overflow-hidden">
+                <div class="px-4 py-3" style="background-color: #efe6d5; border-bottom: 1px solid var(--safari-border);">
+                    <span class="fw-bold small text-uppercase" style="color: #6b4c1b; letter-spacing: 0.5px;">2. Cuentas de Mesas Pendientes de Pago</span>
                 </div>
-            </form>
+                <div class="table-responsive">
+                    <table class="table table-safari text-center align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>FOLIO</th>
+                                <th>MESA</th>
+                                <th>PUNTO DE VENTA</th>
+                                <th>FECHA / HORA</th>
+                                <th>TOTAL A PAGAR</th>
+                                <th>ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in pedidos_pendientes %}
+                                <tr>
+                                    <td class="fw-bold">#{{ p.id }}</td>
+                                    <td><span class="badge-safari">{{ p.mesa.nombre|default:"Barra" }}</span></td>
+                                    <td>{{ p.puntoventa.nombre }}</td>
+                                    <td class="small" style="color: #6e5a44;">{{ p.fecha|date:"d/m/Y H:i" }}</td>
+                                    <td class="fw-bold" style="color: #84530d;">${{ p.total }}</td>
+                                    <td>
+                                        <form action="/registrar_ventas/" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="tipo_accion" value="pagar_mesa">
+                                            <input type="hidden" name="venta_id" value="{{ p.id }}">
+                                            <button type="submit" class="btn-safari-pill">
+                                                <i class="bi bi-check2-circle"></i> Pagar y Liberar Mesa
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="6" class="py-4 text-muted">No hay cuentas de mesas pendientes por cobrar en este momento.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    </body>
 </html>

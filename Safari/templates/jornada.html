@@ -3,57 +3,273 @@
     <head>
         {% load static %}
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Control de Jornada y Cajas</title>
+        <title>Control de Jornada y Caja | Parque Safari</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="{% static 'alertify/alertify.min.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'alertify/css/alertify.min.css' %}" />
-        <link rel="stylesheet" href="{% static 'alertify/css/themes/default.min.css' %}" />
-
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <style>
-            body { background-color: #e8ecf2 !important; color: #1e293b; font-family: sans-serif; }
-            .card-custom { border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+            :root {
+                --safari-nav: #2b1d03;
+                --safari-bg: #f4efe6;
+                --safari-card: #fdfbf7;
+                --safari-border: #e6dec8;
+                --safari-icon-bg: #f3e6d0;
+                --safari-btn: #84530d;
+                --safari-btn-hover: #6b4209;
+                --safari-gold: #d9821b;
+                --safari-text: #231709;
+                --safari-muted: #6e5a44;
+            }
+            body {
+                background-color: var(--safari-bg) !important;
+                color: var(--safari-text);
+                font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            .navbar-safari {
+                background-color: var(--safari-nav) !important;
+                padding: 0.85rem 1.75rem;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+            }
+            .brand-safari {
+                color: var(--safari-gold) !important;
+                font-weight: 700;
+                font-size: 1.25rem;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .brand-safari:hover {
+                color: #f39c2b !important;
+            }
+            .user-nav-label {
+                color: #ffffff;
+                font-weight: 700;
+                font-size: 1.15rem;
+                margin-left: 1rem;
+            }
+            .btn-logout-safari {
+                background-color: rgba(217, 130, 27, 0.08);
+                border: 1px solid #9c6317;
+                color: #e59a3c !important;
+                border-radius: 50px;
+                padding: 0.4rem 1.15rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                transition: all 0.2s ease;
+            }
+            .btn-logout-safari:hover {
+                background-color: #84530d;
+                color: #ffffff !important;
+                border-color: #84530d;
+            }
+            .btn-back-safari {
+                background-color: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(230, 222, 200, 0.35);
+                color: #fdfbf7 !important;
+                border-radius: 50px;
+                padding: 0.38rem 1rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.35rem;
+                transition: all 0.2s ease;
+            }
+            .btn-back-safari:hover {
+                background-color: var(--safari-gold);
+                color: #231709 !important;
+                border-color: var(--safari-gold);
+            }
+            .safari-card {
+                background-color: var(--safari-card);
+                border: 1px solid var(--safari-border);
+                border-radius: 16px;
+                box-shadow: 0 6px 20px rgba(43, 29, 3, 0.04);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .safari-card-hover:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 28px rgba(43, 29, 3, 0.09);
+            }
+            .safari-icon-box {
+                width: 52px;
+                height: 52px;
+                background-color: var(--safari-icon-bg);
+                color: var(--safari-btn);
+                border-radius: 12px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.45rem;
+                margin-bottom: 1.1rem;
+            }
+            .btn-safari-pill {
+                background-color: var(--safari-btn);
+                color: #ffffff !important;
+                border: none;
+                border-radius: 50px;
+                padding: 0.42rem 1.35rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.4rem;
+                transition: background-color 0.2s ease, transform 0.15s ease;
+            }
+            .btn-safari-pill:hover {
+                background-color: var(--safari-btn-hover);
+                color: #ffffff !important;
+                transform: translateY(-1px);
+            }
+            .btn-safari-submit {
+                background-color: var(--safari-btn);
+                color: #ffffff !important;
+                border: none;
+                border-radius: 10px;
+                padding: 0.65rem 1.4rem;
+                font-weight: 600;
+                transition: background-color 0.2s ease;
+            }
+            .btn-safari-submit:hover {
+                background-color: var(--safari-btn-hover);
+                color: #ffffff !important;
+            }
+            .safari-divider {
+                border-bottom: 1px solid #dfd5c0;
+                margin-top: 1.2rem;
+                margin-bottom: 2rem;
+            }
+            .form-control, .form-select {
+                background-color: #ffffff;
+                border: 1px solid #dcd2be;
+                border-radius: 10px;
+                padding: 0.6rem 0.9rem;
+                color: var(--safari-text);
+            }
+            .form-control:focus, .form-select:focus {
+                border-color: var(--safari-gold);
+                box-shadow: 0 0 0 0.2rem rgba(217, 130, 27, 0.18);
+            }
+            .form-label-safari {
+                color: #6b4c1b;
+                font-weight: 600;
+                font-size: 0.84rem;
+                margin-bottom: 0.35rem;
+            }
+            .table-safari thead th {
+                background-color: #f3ece0 !important;
+                color: #6e5a44 !important;
+                font-size: 0.78rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 1px solid var(--safari-border);
+                padding: 14px 12px;
+            }
+            .table-safari tbody td {
+                border-bottom: 1px solid #f0e9dc;
+                padding: 13px 12px;
+                color: var(--safari-text);
+            }
+            .btn-action {
+                width: 36px;
+                height: 36px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 8px;
+                border: none;
+                text-decoration: none;
+                transition: all 0.2s ease-in-out;
+            }
+            .btn-action-edit { background-color: #f3e6d0; color: #84530d; }
+            .btn-action-edit:hover { background-color: #e5d1af; color: #5c3906; }
+            .btn-action-delete { background-color: #fde8e8; color: #c81e1e; }
+            .btn-action-delete:hover { background-color: #fbd5d5; color: #9b1c1c; }
+            .badge-safari {
+                background-color: #f3e6d0;
+                color: #6b4209;
+                font-weight: 600;
+                padding: 0.4em 0.85em;
+                border-radius: 50px;
+            }
         </style>
+
+        
+        <script>
+            const botonCerrarSesion = () => {
+                Swal.fire({
+                    title: "Cerrar Sesión",
+                    text: "¿Estás seguro(a) de querer cerrar la sesión?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "#84530d",
+                    cancelButtonColor: "#94a3b8",
+                    confirmButtonText: "Aceptar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/cerrar_sesion/";
+                    }
+                });
+            }
+        </script>
+
     </head>
     <body>
-        <div class="fs-5 fw-bold">
-            <nav class="navbar navbar-expand-lg p-3" style="background-color: #25a1b9;">
-                <div class="container-fluid">
-                    <a class="navbar-brand link-light" href="/panel_cajero/"> &lt;- Volver</a>
-                    <div class="collapse navbar-collapse">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <span class="nav-link link-light">Usuario: {{ nomUsuario }}</span>
-                            </li>
-                        </ul>
-                    </div>
+        
+        <nav class="navbar navbar-expand-lg navbar-safari sticky-top">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center">
+                    <a href="/panel_cajero/" class="btn-back-safari me-3"><i class="bi bi-arrow-left"></i> Volver</a>
+                    <span class="brand-safari">🦁 Parque Safari</span>
+                    <span class="user-nav-label">Usuario: {{ nomUsuario|default:"ADMIN" }}</span>
                 </div>
-            </nav>  
-        </div>
-
-        <div class="container py-4" style="max-width: 950px;">
-            <div class="mb-4 pb-2 border-bottom">
-                <h2 class="h4 fw-bold mb-1">Apertura y Cierre de Jornada (Caja)</h2>
-                <p class="text-muted small mb-0">Control de fondos iniciales y proceso de cuadratura de efectivo.</p>
+                <div class="ms-auto d-flex align-items-center gap-2">
+                    <button type="button" onclick="botonCerrarSesion()" class="btn-logout-safari"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</button>
+                </div>
             </div>
+        </nav>
 
-            {% if r %} <script>alertify.success('{{ r }}')</script> {% endif %}
-            {% if r2 %} <script>alertify.error('{{ r2 }}')</script> {% endif %}
+
+        <div class="container py-5" style="max-width: 980px;">
+            {% if r %} <script>Swal.fire({title: "Jornada de Caja", text: "{{ r }}", icon: "success", confirmButtonColor: "#84530d"});</script> {% endif %}
+            {% if r2 %} <script>Swal.fire({title: "Atención", text: "{{ r2 }}", icon: "error", confirmButtonColor: "#84530d"});</script> {% endif %}
+
+            <div class="mb-2">
+                <h2 class="fw-bold d-flex align-items-center gap-2 mb-1">
+                    <i class="bi bi-calculator" style="color: #c97a16;"></i>
+                    <span>Apertura y Cierre de Jornada (Caja)</span>
+                </h2>
+                <p class="small mb-0" style="color: #6e5a44;">Control de fondo inicial de sencillo y proceso de cuadratura de billetes y monedas al cierre.</p>
+            </div>
+            <div class="safari-divider"></div>
 
             {% if not caja_abierta %}
-                <!-- FORMULARIO 1: APERTURA DE CAJA -->
-                <div class="bg-white p-4 mb-4 card-custom">
-                    <h3 class="h6 fw-semibold mb-3 text-secondary"><i class="bi bi-box-arrow-in-right me-1"></i> Apertura de Caja</h3>
+                <div class="safari-card p-4 mb-4">
+                    <h3 class="h6 fw-bold mb-3" style="color: #6b4c1b;"><i class="bi bi-box-arrow-in-right me-1"></i> Apertura de Caja</h3>
                     <form action="/jornada/" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="accion" value="abrir">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label small text-secondary fw-semibold">Punto de Venta</label>
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-5">
+                                <label class="form-label-safari">Punto de Venta</label>
                                 <select name="cbopdv" class="form-select" required>
                                     <option value="">Seleccione el punto de venta...</option>
                                     {% for p in puntos %}
@@ -61,12 +277,12 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label small text-secondary fw-semibold">Monto Inicial en Efectivo (Sencillo / Vuelto)</label>
+                            <div class="col-md-4">
+                                <label class="form-label-safari">Monto Inicial en Efectivo (Sencillo)</label>
                                 <input type="number" name="txtmontoini" class="form-control" placeholder="Ej: 50000" min="0" required>
                             </div>
-                            <div class="col-12 text-end">
-                                <button type="submit" class="btn text-white fw-medium px-4" style="background-color: #4f46e5; border-radius: 8px;">
+                            <div class="col-md-3">
+                                <button type="submit" class="btn-safari-submit w-100">
                                     <i class="bi bi-check2-circle me-1"></i> Abrir Caja
                                 </button>
                             </div>
@@ -74,85 +290,83 @@
                     </form>
                 </div>
             {% else %}
-                <!-- FORMULARIO 2: CUADRATURA Y CIERRE DE CAJA -->
-                <div class="bg-white p-4 mb-4 card-custom">
+                <div class="safari-card p-4 mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3 class="h6 fw-semibold text-danger mb-0"><i class="bi bi-calculator me-1"></i> Cuadratura y Cierre de Caja (Sesión #{{ caja_abierta.id }})</h3>
-                        <span class="badge bg-success-subtle text-success px-3 py-2">ESTADO: {{ caja_abierta.estado }}</span>
+                        <h3 class="h6 fw-bold mb-0" style="color: #84530d;"><i class="bi bi-calculator me-1"></i> Cuadratura y Cierre de Caja (Sesión #{{ caja_abierta.id }})</h3>
+                        <span class="badge bg-success rounded-pill px-3 py-2">ESTADO: {{ caja_abierta.estado }}</span>
                     </div>
-                    <div class="alert alert-info py-2 small">
-                        <strong>Punto:</strong> {{ caja_abierta.puntoventa.nombre }} | <strong>Monto Inicial:</strong> ${{ caja_abierta.monto_inicial }} | <strong>Abierta el:</strong> {{ caja_abierta.fecha_apertura|date:"d/m/Y H:i" }}
+                    <div class="p-3 mb-3 rounded-3 small" style="background-color: #f3e6d0; color: #5c3906;">
+                        <strong>Punto de Venta:</strong> {{ caja_abierta.puntoventa.nombre }} | <strong>Monto Inicial:</strong> ${{ caja_abierta.monto_inicial }} | <strong>Apertura:</strong> {{ caja_abierta.fecha_apertura|date:"d/m/Y H:i" }}
                     </div>
 
                     <form action="/jornada/" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="accion" value="cerrar">
 
-                        <h6 class="small fw-bold text-secondary text-uppercase mt-3">Desglose de Billetes</h6>
+                        <h6 class="small fw-bold text-uppercase mt-3 mb-2" style="color: #6b4c1b;">Desglose de Billetes</h6>
                         <div class="row g-2 mb-3">
                             <div class="col-md-3">
-                                <label class="form-label small text-muted">$20.000</label>
+                                <label class="form-label-safari">$20.000</label>
                                 <input type="number" name="b20000" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label small text-muted">$10.000</label>
+                                <label class="form-label-safari">$10.000</label>
                                 <input type="number" name="b10000" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label small text-muted">$5.000</label>
+                                <label class="form-label-safari">$5.000</label>
                                 <input type="number" name="b5000" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label small text-muted">$1.000</label>
+                                <label class="form-label-safari">$1.000</label>
                                 <input type="number" name="b1000" value="0" min="0" class="form-control form-control-sm">
                             </div>
                         </div>
 
-                        <h6 class="small fw-bold text-secondary text-uppercase mt-3">Desglose de Monedas</h6>
+                        <h6 class="small fw-bold text-uppercase mt-3 mb-2" style="color: #6b4c1b;">Desglose de Monedas</h6>
                         <div class="row g-2 mb-3">
                             <div class="col">
-                                <label class="form-label small text-muted">$500</label>
+                                <label class="form-label-safari">$500</label>
                                 <input type="number" name="m500" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col">
-                                <label class="form-label small text-muted">$100</label>
+                                <label class="form-label-safari">$100</label>
                                 <input type="number" name="m100" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col">
-                                <label class="form-label small text-muted">$50</label>
+                                <label class="form-label-safari">$50</label>
                                 <input type="number" name="m50" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col">
-                                <label class="form-label small text-muted">$10</label>
+                                <label class="form-label-safari">$10</label>
                                 <input type="number" name="m10" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col">
-                                <label class="form-label small text-muted">$5</label>
+                                <label class="form-label-safari">$5</label>
                                 <input type="number" name="m5" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col">
-                                <label class="form-label small text-muted">$1</label>
+                                <label class="form-label-safari">$1</label>
                                 <input type="number" name="m1" value="0" min="0" class="form-control form-control-sm">
                             </div>
                         </div>
 
-                        <div class="text-end pt-3">
-                            <button type="submit" class="btn btn-danger px-4 fw-medium" style="border-radius: 8px;">
-                                <i class="bi bi-lock-fill me-1"></i> Cerrar Caja y Ejecutar Cuadratura
+                        <div class="text-end pt-2">
+                            <button type="submit" class="btn-safari-pill px-4 py-2">
+                                <i class="bi bi-lock-fill"></i> Cerrar Caja y Ejecutar Cuadratura
                             </button>
                         </div>
                     </form>
                 </div>
             {% endif %}
 
-            <!-- LISTADO HISTORIAL DE CAJAS -->
-            <div class="bg-white p-0 overflow-hidden card-custom">
-                <div class="px-4 py-3 bg-light-subtle" style="border-bottom: 1px solid #f1f5f9;">
-                    <span class="fw-semibold text-secondary small text-uppercase" style="letter-spacing: 0.5px;">Últimas Sesiones de Caja</span>
+            <div class="safari-card p-0 overflow-hidden">
+                <div class="px-4 py-3" style="background-color: #efe6d5; border-bottom: 1px solid var(--safari-border);">
+                    <span class="fw-bold small text-uppercase" style="color: #6b4c1b; letter-spacing: 0.5px;">Últimas Sesiones de Caja</span>
                 </div>
                 <div class="table-responsive">
-                    <table class="table text-center align-middle mb-0">
-                        <thead style="border-bottom: 1px solid #f1f5f9; font-size: 0.78rem; color: #64748b;">
+                    <table class="table table-safari text-center align-middle mb-0">
+                        <thead>
                             <tr>
                                 <th>#</th>
                                 <th>PUNTO</th>
@@ -165,29 +379,21 @@
                                 <th>ESTADO</th>
                             </tr>
                         </thead>
-                        <tbody style="border-top: none; font-size: 0.85rem;">
+                        <tbody>
                             {% for c in historial_cajas %}
                                 <tr>
-                                    <td>#{{ c.id }}</td>
+                                    <td class="fw-bold">#{{ c.id }}</td>
                                     <td>{{ c.puntoventa.nombre }}</td>
                                     <td>{{ c.fecha_apertura|date:"d/m/Y H:i" }}</td>
                                     <td>{{ c.fecha_cierre|date:"d/m/Y H:i"|default:"-" }}</td>
                                     <td>${{ c.monto_inicial }}</td>
                                     <td>${{ c.total_ventas }}</td>
                                     <td>${{ c.monto_contado }}</td>
-                                    <td class="{% if c.diferencia < 0 %}text-danger fw-bold{% elif c.diferencia > 0 %}text-primary fw-bold{% else %}text-success fw-bold{% endif %}">
-                                        ${{ c.diferencia }}
-                                    </td>
-                                    <td>
-                                        <span class="badge {% if c.estado == 'ABIERTA' %}bg-success{% else %}bg-secondary{% endif %}">
-                                            {{ c.estado }}
-                                        </span>
-                                    </td>
+                                    <td class="fw-bold {% if c.diferencia < 0 %}text-danger{% else %}text-success{% endif %}">${{ c.diferencia }}</td>
+                                    <td><span class="badge-safari">{{ c.estado }}</span></td>
                                 </tr>
                             {% empty %}
-                                <tr>
-                                    <td colspan="9" class="text-muted py-3">No hay registros de cajas anteriores.</td>
-                                </tr>
+                                <tr><td colspan="9" class="py-4 text-muted">No hay registros de sesiones de caja anteriores.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
