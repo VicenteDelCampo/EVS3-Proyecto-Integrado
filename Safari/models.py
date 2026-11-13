@@ -1,5 +1,11 @@
 from django.db import models
 
+class Estado(models.Model):
+    nombre = models.TextField(max_length=15)
+    def __str__(self):
+            return self.nombre
+
+
 class Clases(models.Model):
     nombre = models.TextField(max_length=12)
     def __str__(self):
@@ -10,6 +16,7 @@ class Usuario(models.Model):
     nombre = models.TextField(max_length=12)
     password = models.TextField(max_length=20)
     clase = models.ForeignKey(Clases, on_delete=models.CASCADE)
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
     def __str__(self):
         return self.nombre
     
@@ -22,6 +29,7 @@ class Historial(models.Model):
 class PuntodeVenta(models.Model):
     nombre = models.TextField(max_length=100)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
     def __str__(self):
         return self.nombre
 
@@ -29,7 +37,8 @@ class Mesa(models.Model):
     nombre = models.TextField(max_length=30)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     pdv = models.ForeignKey(PuntodeVenta, on_delete=models.CASCADE)
-    estado = models.TextField(max_length=15)
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
+    estado_mesa = models.TextField(max_length=15)
     def __str__(self):
         return self.nombre
 
@@ -38,15 +47,9 @@ class Producto(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     descripcion = models.TextField(max_length=255)
     precio = models.IntegerField(default=0)
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
     def __str__(self):
         return self.nombre
-    
-class Ticket(models.Model):
-    correo = models.TextField(max_length=255)
-    tipo = models.TextField(max_length=255)
-    descripcion = models.TextField(max_length=255)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    
     
 class JornadaCaja(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
@@ -57,7 +60,7 @@ class JornadaCaja(models.Model):
     total_ventas = models.IntegerField(default=0)
     monto_contado = models.IntegerField(default=0) 
     diferencia = models.IntegerField(default=0)    
-    estado = models.TextField(max_length=15, default="ABIERTA")
+    estado_J = models.TextField(max_length=15, default="ABIERTA")
     
 class Venta(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
@@ -66,7 +69,8 @@ class Venta(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     total = models.IntegerField(default=0)
     tipo_venta = models.TextField(max_length=20, default="BARRA")
-    estado = models.TextField(max_length=20, default="PENDIENTE") 
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
+    estado_v = models.TextField(max_length=20, default="PENDIENTE") 
     def __str__(self):
         return f"Folio #{self.id} - {self.estado}"
 

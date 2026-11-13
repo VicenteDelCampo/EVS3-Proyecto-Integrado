@@ -3,56 +3,226 @@
     <head>
         {% load static %}
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Historial de Acciones</title>
+        <title>Historial de Acciones | Parque Safari</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        
-        <script src="{% static "alertify/alertify.min.js" %}"></script>
-        <link rel="stylesheet" href="{% static "alertify/css/alertify.min.css" %}" />
-        <link rel="stylesheet" href="{% static "alertify/css/themes/default.min.css" %}" />
-        
-        <!-- Importaciones para usar librería de paginación -->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.6.0/pagination.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.6.0/pagination.css">
-
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <style>
-            body {
-                background-color: #e8ecf2 !important;
-                color: #1e293b;
-                font-family: sans-serif;
+            :root {
+                --safari-nav: #2b1d03;
+                --safari-bg: #f4efe6;
+                --safari-card: #fdfbf7;
+                --safari-border: #e6dec8;
+                --safari-icon-bg: #f3e6d0;
+                --safari-btn: #84530d;
+                --safari-btn-hover: #6b4209;
+                --safari-gold: #d9821b;
+                --safari-text: #231709;
+                --safari-muted: #6e5a44;
             }
-
-            .btn-sort {
-                width: 26px;
-                height: 26px;
+            body {
+                background-color: var(--safari-bg) !important;
+                color: var(--safari-text);
+                font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            .navbar-safari {
+                background-color: var(--safari-nav) !important;
+                padding: 0.85rem 1.75rem;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+            }
+            .brand-safari {
+                color: var(--safari-gold) !important;
+                font-weight: 700;
+                font-size: 1.25rem;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .brand-safari:hover {
+                color: #f39c2b !important;
+            }
+            .user-nav-label {
+                color: #ffffff;
+                font-weight: 700;
+                font-size: 1.15rem;
+                margin-left: 1rem;
+            }
+            .btn-logout-safari {
+                background-color: rgba(217, 130, 27, 0.08);
+                border: 1px solid #9c6317;
+                color: #e59a3c !important;
+                border-radius: 50px;
+                padding: 0.4rem 1.15rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                transition: all 0.2s ease;
+            }
+            .btn-logout-safari:hover {
+                background-color: #84530d;
+                color: #ffffff !important;
+                border-color: #84530d;
+            }
+            .btn-back-safari {
+                background-color: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(230, 222, 200, 0.35);
+                color: #fdfbf7 !important;
+                border-radius: 50px;
+                padding: 0.38rem 1rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.35rem;
+                transition: all 0.2s ease;
+            }
+            .btn-back-safari:hover {
+                background-color: var(--safari-gold);
+                color: #231709 !important;
+                border-color: var(--safari-gold);
+            }
+            .safari-card {
+                background-color: var(--safari-card);
+                border: 1px solid var(--safari-border);
+                border-radius: 16px;
+                box-shadow: 0 6px 20px rgba(43, 29, 3, 0.04);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .safari-card-hover:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 28px rgba(43, 29, 3, 0.09);
+            }
+            .safari-icon-box {
+                width: 52px;
+                height: 52px;
+                background-color: var(--safari-icon-bg);
+                color: var(--safari-btn);
+                border-radius: 12px;
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                border-radius: 6px;
-                background-color: #eff6ff;
-                color: #2563eb;
+                font-size: 1.45rem;
+                margin-bottom: 1.1rem;
+            }
+            .btn-safari-pill {
+                background-color: var(--safari-btn);
+                color: #ffffff !important;
+                border: none;
+                border-radius: 50px;
+                padding: 0.42rem 1.35rem;
+                font-size: 0.88rem;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.4rem;
+                transition: background-color 0.2s ease, transform 0.15s ease;
+            }
+            .btn-safari-pill:hover {
+                background-color: var(--safari-btn-hover);
+                color: #ffffff !important;
+                transform: translateY(-1px);
+            }
+            .btn-safari-submit {
+                background-color: var(--safari-btn);
+                color: #ffffff !important;
+                border: none;
+                border-radius: 10px;
+                padding: 0.65rem 1.4rem;
+                font-weight: 600;
+                transition: background-color 0.2s ease;
+            }
+            .btn-safari-submit:hover {
+                background-color: var(--safari-btn-hover);
+                color: #ffffff !important;
+            }
+            .safari-divider {
+                border-bottom: 1px solid #dfd5c0;
+                margin-top: 1.2rem;
+                margin-bottom: 2rem;
+            }
+            .form-control, .form-select {
+                background-color: #ffffff;
+                border: 1px solid #dcd2be;
+                border-radius: 10px;
+                padding: 0.6rem 0.9rem;
+                color: var(--safari-text);
+            }
+            .form-control:focus, .form-select:focus {
+                border-color: var(--safari-gold);
+                box-shadow: 0 0 0 0.2rem rgba(217, 130, 27, 0.18);
+            }
+            .form-label-safari {
+                color: #6b4c1b;
+                font-weight: 600;
+                font-size: 0.84rem;
+                margin-bottom: 0.35rem;
+            }
+            .table-safari thead th {
+                background-color: #f3ece0 !important;
+                color: #6e5a44 !important;
+                font-size: 0.78rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 1px solid var(--safari-border);
+                padding: 14px 12px;
+            }
+            .table-safari tbody td {
+                border-bottom: 1px solid #f0e9dc;
+                padding: 13px 12px;
+                color: var(--safari-text);
+            }
+            .btn-action {
+                width: 36px;
+                height: 36px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 8px;
+                border: none;
                 text-decoration: none;
                 transition: all 0.2s ease-in-out;
             }
-            .btn-sort:hover {
-                background-color: #dbeafe;
-                color: #1d4ed8;
+            .btn-action-edit { background-color: #f3e6d0; color: #84530d; }
+            .btn-action-edit:hover { background-color: #e5d1af; color: #5c3906; }
+            .btn-action-delete { background-color: #fde8e8; color: #c81e1e; }
+            .btn-action-delete:hover { background-color: #fbd5d5; color: #9b1c1c; }
+            .badge-safari {
+                background-color: #f3e6d0;
+                color: #6b4209;
+                font-weight: 600;
+                padding: 0.4em 0.85em;
+                border-radius: 50px;
             }
         </style>
 
+        
         <script>
             const botonCerrarSesion = () => {
                 Swal.fire({
-                    title: "Pregunta",
-                    text: "¿Estás Seguro(a) de Querer Cerrar la Sesión?",
+                    title: "Cerrar Sesión",
+                    text: "¿Estás seguro(a) de querer cerrar la sesión?",
                     icon: "question",
                     showCancelButton: true,
-                    confirmButtonColor: "#4f46e5",
+                    confirmButtonColor: "#84530d",
                     cancelButtonColor: "#94a3b8",
                     confirmButtonText: "Aceptar",
                     cancelButtonText: "Cancelar"
@@ -63,112 +233,108 @@
                 });
             }
         </script>
+
+        <style>
+            .btn-sort {
+                width: 24px;
+                height: 24px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 6px;
+                background-color: #e5d6bc;
+                color: #6b4209;
+                text-decoration: none;
+            }
+            .btn-sort:hover {
+                background-color: #84530d;
+                color: #ffffff;
+            }
+        </style>
     </head>
     <body>
-
-        <!-- Barra de Navegación Superior -->
-        <div class="fs-5 fw-bold">
-            <nav class="navbar navbar-expand-lg p-3" style="background-color: #25a1b9;">
-                <div class="container-fluid">
-                    <a class="navbar-brand link-light" href="/panel_admin/"> &lt;- Volver</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarText">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <span class="nav-link link-light">Usuario: {{ nomUsuario }}</span>
-                            </li>
-                        </ul>
-                    </div>
+        
+        <nav class="navbar navbar-expand-lg navbar-safari sticky-top">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center">
+                    <a href="/panel_admin/" class="btn-back-safari me-3"><i class="bi bi-arrow-left"></i> Volver</a>
+                    <span class="brand-safari">🦁 Parque Safari</span>
+                    <span class="user-nav-label">Usuario: {{ nomUsuario|default:"ADMIN" }}</span>
                 </div>
-            </nav>  
-        </div>
-
-        <div class="container py-4" style="max-width: 1000px;">
-            
-            <div class="mb-4 pb-2 border-bottom">
-                <h2 class="h4 fw-bold mb-1">Listado de Historial de Acciones</h2>
-                <p class="text-muted small mb-0">Presentación de registros históricos y auditoría de usuarios en la base de datos.</p>
+                <div class="ms-auto d-flex align-items-center gap-2">
+                    <button type="button" onclick="botonCerrarSesion()" class="btn-logout-safari"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</button>
+                </div>
             </div>
+        </nav>
 
-            {% if r %}
-                <script>
-                    alertify.success('{{ r }}')
-                </script>
-            {% endif %}
 
-            {% if r2 %}
-                <script>
-                    alertify.error('{{ r2 }}')
-                </script>
-            {% endif %}
+        <div class="container py-5" style="max-width: 1020px;">
+            <div class="mb-2">
+                <h2 class="fw-bold d-flex align-items-center gap-2 mb-1">
+                    <i class="bi bi-clock-history" style="color: #c97a16;"></i>
+                    <span>Listado de Historial de Acciones</span>
+                </h2>
+                <p class="small mb-0" style="color: #6e5a44;">Presentación de registros históricos y auditoría de usuarios.</p>
+            </div>
+            <div class="safari-divider"></div>
 
             {% if his %}
-                <!-- Card de Listado con Paginación -->
-                <div class="bg-white p-0 overflow-hidden" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-                    <div class="px-4 py-3 d-flex justify-content-between align-items-center bg-light-subtle" style="border-bottom: 1px solid #f1f5f9;">
-                        <span class="fw-semibold text-secondary small text-uppercase" style="color: #64748b; letter-spacing: 0.5px; font-size: 0.8rem;">Registros de Auditoría</span>
+                <div class="safari-card p-0 overflow-hidden">
+                    <div class="px-4 py-3" style="background-color: #efe6d5; border-bottom: 1px solid var(--safari-border);">
+                        <span class="fw-bold small text-uppercase" style="color: #6b4c1b; letter-spacing: 0.5px;">Registros de Auditoría</span>
                     </div>
 
-                    <!-- Contenedor de Paginación JS -->
                     <div id="paginacionHistorial" class="d-flex justify-content-center mt-3 mb-3"></div>
 
                     <div class="table-responsive">
-                        <table class="table text-center align-middle mb-0">
-                            <thead style="border-bottom: 1px solid #f1f5f9;">
-                                <tr style="color: #64748b; font-size: 0.78rem;">
-                                    <th style="width: 12%; padding: 12px;">
+                        <table class="table table-safari text-center align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>
                                         <div class="d-flex align-items-center justify-content-center gap-1">
                                             <span>ID</span>
-                                            <a href="/listado_historial/1/" class="btn-sort" title="Orden Ascendente"><i class="bi bi-arrow-up"></i></a>
-                                            <a href="/listado_historial/2/" class="btn-sort" title="Orden Descendente"><i class="bi bi-arrow-down"></i></a>
+                                            <a href="/listado_historial/1/" class="btn-sort"><i class="bi bi-arrow-up"></i></a>
+                                            <a href="/listado_historial/2/" class="btn-sort"><i class="bi bi-arrow-down"></i></a>
                                         </div>
                                     </th>
-                                    <th style="width: 32%; padding: 12px;">
+                                    <th>
                                         <div class="d-flex align-items-center justify-content-center gap-1">
                                             <span>DESCRIPCIÓN</span>
-                                            <a href="/listado_historial/3/" class="btn-sort" title="Orden Ascendente"><i class="bi bi-arrow-up"></i></a>
-                                            <a href="/listado_historial/4/" class="btn-sort" title="Orden Descendente"><i class="bi bi-arrow-down"></i></a>
+                                            <a href="/listado_historial/3/" class="btn-sort"><i class="bi bi-arrow-up"></i></a>
+                                            <a href="/listado_historial/4/" class="btn-sort"><i class="bi bi-arrow-down"></i></a>
                                         </div>
                                     </th>
-                                    <th style="width: 20%; padding: 12px;">
+                                    <th>
                                         <div class="d-flex align-items-center justify-content-center gap-1">
                                             <span>TABLA AFECTADA</span>
-                                            <a href="/listado_historial/5/" class="btn-sort" title="Orden Ascendente"><i class="bi bi-arrow-up"></i></a>
-                                            <a href="/listado_historial/6/" class="btn-sort" title="Orden Descendente"><i class="bi bi-arrow-down"></i></a>
+                                            <a href="/listado_historial/5/" class="btn-sort"><i class="bi bi-arrow-up"></i></a>
+                                            <a href="/listado_historial/6/" class="btn-sort"><i class="bi bi-arrow-down"></i></a>
                                         </div>
                                     </th>
-                                    <th style="width: 20%; padding: 12px;">
+                                    <th>
                                         <div class="d-flex align-items-center justify-content-center gap-1">
                                             <span>FECHA / HORA</span>
-                                            <a href="/listado_historial/7/" class="btn-sort" title="Orden Ascendente"><i class="bi bi-arrow-up"></i></a>
-                                            <a href="/listado_historial/8/" class="btn-sort" title="Orden Descendente"><i class="bi bi-arrow-down"></i></a>
+                                            <a href="/listado_historial/7/" class="btn-sort"><i class="bi bi-arrow-up"></i></a>
+                                            <a href="/listado_historial/8/" class="btn-sort"><i class="bi bi-arrow-down"></i></a>
                                         </div>
                                     </th>
-                                    <th style="width: 16%; padding: 12px;">
+                                    <th>
                                         <div class="d-flex align-items-center justify-content-center gap-1">
                                             <span>USUARIO</span>
-                                            <a href="/listado_historial/9/" class="btn-sort" title="Orden Ascendente"><i class="bi bi-arrow-up"></i></a>
-                                            <a href="/listado_historial/10/" class="btn-sort" title="Orden Descendente"><i class="bi bi-arrow-down"></i></a>
+                                            <a href="/listado_historial/9/" class="btn-sort"><i class="bi bi-arrow-up"></i></a>
+                                            <a href="/listado_historial/10/" class="btn-sort"><i class="bi bi-arrow-down"></i></a>
                                         </div>
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody id="tablaHistorial" style="border-top: none;">
+                            <tbody id="tablaHistorial">
                                 {% for x in his %}
                                     <tr>
-                                        <td class="fw-semibold text-secondary">#{{ x.id }}</td>
+                                        <td class="fw-bold">#{{ x.id }}</td>
                                         <td>{{ x.descripcion_historial }}</td>
-                                        <td>
-                                            {% if x.tabla_afectada_historial %}
-                                                <span class="badge bg-light text-secondary border">{{ x.tabla_afectada_historial }}</span>
-                                            {% else %}
-                                                <span class="text-muted">-</span>
-                                            {% endif %}
-                                        </td>
-                                        <td class="text-muted small">{{ x.fecha_hora_historial|date:"d/m/Y H:i" }}</td>
-                                        <td><span class="badge bg-info-subtle text-dark px-2 py-1">{{ x.usuario.nombre }}</span></td>
+                                        <td><span class="badge bg-light text-dark border">{{ x.tabla_afectada_historial|default:"-" }}</span></td>
+                                        <td class="small" style="color: #6e5a44;">{{ x.fecha_hora_historial|date:"d/m/Y H:i" }}</td>
+                                        <td><span class="badge-safari">{{ x.usuario.nombre }}</span></td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -178,7 +344,6 @@
                     <script>
                         $(document).ready(function() {
                             const filas = $("#tablaHistorial tr").toArray();
-
                             $("#paginacionHistorial").pagination({
                                 dataSource: filas,
                                 pageSize: 5,
@@ -200,15 +365,12 @@
                     </script>
                 </div>
             {% else %}
-                <div class="bg-white p-5 text-center" style="border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.8);">
-                    <i class="bi bi-inbox fs-1 text-secondary"></i>
+                <div class="safari-card p-5 text-center">
+                    <i class="bi bi-inbox fs-1" style="color: #84530d;"></i>
                     <h5 class="fw-bold mt-3 mb-1">¡ No Hay Registros Para Mostrar !</h5>
-                    <p class="text-muted small mb-0">Aún no se han registrado acciones históricas en el sistema.</p>
+                    <p class="small mb-0" style="color: #6e5a44;">Aún no se han registrado acciones históricas en el sistema.</p>
                 </div>
             {% endif %}
-
         </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

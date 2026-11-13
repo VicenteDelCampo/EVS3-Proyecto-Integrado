@@ -1,13 +1,10 @@
 from django.shortcuts import render
 from datetime import datetime
-from .models import Usuario, Historial, Mesa, Clases, PuntodeVenta, Producto, Ticket, Venta, DetalleVenta, JornadaCaja
+from .models import Usuario, Historial, Mesa, Clases, PuntodeVenta, Producto, Estado, Venta, DetalleVenta, JornadaCaja
 from django.db.models import Sum, Count, F
 
 def mostrar_index(request):
     return render(request, 'index.html')
-
-def mostrar_login(request):
-    return render(request, 'form_login.html')
 
 def login(request):
     if request.method == "POST":
@@ -46,11 +43,11 @@ def login(request):
                 return render(request, "panel_cajero.html", datos)
         else:
             datos = { "r2" : "¡ Error de Usuario y/o Contraseña !" }
-            return render(request, "form_login.html", datos)
+            return render(request, "index.html", datos)
     else:
         datos = { "r2" : "¡ No se Puede Procesar la Solicitud !" }
-        return render(request, "form_login.html", datos)
-    return render(request, 'form_login.html')
+        return render(request, "index.html", datos)
+    return render(request, 'index.html')
 
 def cerrar_sesion(request):
     try:
@@ -113,7 +110,6 @@ def mostrar_panel_admin(request):
     estadoSesion = request.session.get("estadoSesion")
     nomUsuario = request.session.get("nomUsuario")
     claseUsuario = request.session.get("claseUsuario")
-
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
             datos = { "nomUsuario" : nomUsuario }
@@ -131,10 +127,10 @@ def administrar_mesas(request):
     nomUsuario = request.session.get("nomUsuario")
     claseUsuario = request.session.get("claseUsuario")
     if estadoSesion is True:
-        if claseUsuario.upper() == "MESERO":
-            mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-            opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-            datos = {"mesa" : mesa, "nomUsuario" : nomUsuario, "opciones_pdv" : opciones_pdv}
+        if claseUsuario.upper() == "MESERO" or claseUsuario.upper() == "ADMINISTRADOR":
+            mesa = Mesa.objects.select_related('pdv').filter(estado_id=1).order_by("nombre")
+            opciones_pdv = PuntodeVenta.objects.all().values().filter(estado_id=1).order_by("nombre")
+            datos = {"mesa" : mesa, "nomUsuario" : nomUsuario, "opciones_pdv" : opciones_pdv, "claseUsuario" : claseUsuario}
             return render(request, 'administrar_mesas.html', datos)
         else:
             datos = { "r2" : "¡ No Tiene Permisos Para Acceder. Privilegios Insuficientes !" }
@@ -143,113 +139,26 @@ def administrar_mesas(request):
         datos = { "r2" : "¡ Debe Iniciar Sesión Para Acceder !" }
         return render(request, "index.html", datos)
 
-
-def administrar_admin_mesas(request):
-    estadoSesion = request.session.get("estadoSesion")
-    nomUsuario = request.session.get("nomUsuario")
-    claseUsuario = request.session.get("claseUsuario")
-    if estadoSesion is True:
-        if claseUsuario.upper() == "ADMINISTRADOR":
-            mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-            opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-            datos = {"mesa" : mesa, "nomUsuario" : nomUsuario, "opciones_pdv" : opciones_pdv}
-            return render(request, 'administrar_admin_mesas.html', datos)
-        else:
-            datos = { "r2" : "¡ No Tiene Permisos Para Acceder. Privilegios Insuficientes !" }
-            return render(request, 'index.html', datos)
-    else:
-        datos = { "r2" : "¡ Debe Iniciar Sesión Para Acceder !" }
-        return render(request, "index.html", datos)
-
-
-def registrar_mesa_admin(request):
-    estadoSesion = request.session.get("estadoSesion")
-    nomUsuario = request.session.get("nomUsuario")
-    idUsuario = request.session.get("idUsuario")
-    claseUsuario = request.session.get("claseUsuario")
-
-    if estadoSesion is True:
-        if claseUsuario.upper() == "ADMINISTRADOR":
-            if request.method == "POST":
-                nom = request.POST["txtnommes"]
-                pdv = request.POST["cbopunven"]
-                est = request.POST["cboest"]
-                comprobarNombreMesa = Mesa.objects.filter(nombre = nom)
-                if comprobarNombreMesa:
-                    mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                    opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                    datos ={
-                        "r2" : "¡ La Mesa ya Existe ("+str(nom).upper()+") ya Existe !",
-                        "mesa" : mesa,
-                        "opciones_pdv" : opciones_pdv
-                    }
-                    return render(request, "administrar_admin_mesas.html", datos)
-                else:
-                    mesa = Mesa(
-                        nombre=nom, 
-                        pdv_id = pdv,
-                        usuario_id= idUsuario,
-                        estado= est
-                    )
-                    mesa.save()
-                    mesa_id = mesa.id
-                    descripcion = f"Mesa Registrada ({ mesa_id })"
-                    tabla = "safari_mesa"
-                    fechayhora = datetime.now()
-                    usuario = request.session["idUsuario"]
-                    his = Historial(
-                        descripcion_historial = descripcion,
-                        tabla_afectada_historial = tabla,
-                        fecha_hora_historial = fechayhora,
-                        usuario_id = usuario
-                    )
-                    his.save()
-                    mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                    opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                    datos = {
-                        "mesa" : mesa,
-                        "opciones_pdv" : opciones_pdv,
-                        "nomUsuario" : nomUsuario,
-                        "r" : f"¡ Mesa Creada ({ mesa_id }) !"
-                    }
-                    return render(request, "administrar_admin_mesas.html", datos)
-            else:
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                datos ={
-                    "r2" : "¡ Debe Presionar el Botón del Formulario !",
-                    "mesa" : mesa,
-                    "opciones_pdv" : opciones_pdv
-                }
-                return render(request, "administrar_admin_mesas.html", datos)
-        else:
-            datos = { "r2" : "¡ No Tiene Permisos Para Acceder. Privilegios Insuficientes !" }
-            return render(request, 'index.html', datos)
-    else:
-        datos = { "r2" : "¡ Debe Iniciar Sesión Para Acceder !" }
-        return render(request, "index.html", datos)
-        
-
 def registrar_mesa(request):
     estadoSesion = request.session.get("estadoSesion")
     nomUsuario = request.session.get("nomUsuario")
     idUsuario = request.session.get("idUsuario")
     claseUsuario = request.session.get("claseUsuario")
-
     if estadoSesion is True:
-        if claseUsuario.upper() == "MESERO":
+        if claseUsuario.upper() == "MESERO" or claseUsuario.upper() == "ADMINISTRADOR" :
             if request.method == "POST":
-                nom = request.POST["txtnommes"]
+                nom = request.POST["txtnommes"].upper()
                 pdv = request.POST["cbopunven"]
                 est = request.POST["cboest"]
-                comprobarNombreMesa = Mesa.objects.filter(nombre = nom)
+                comprobarNombreMesa = Mesa.objects.select_related('pdv').filter(nombre = nom, pdv = pdv, estado_id = 1)
                 if comprobarNombreMesa:
-                    mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                    opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
+                    mesa = Mesa.objects.select_related('pdv').filter(estado_id=1).order_by("nombre")
+                    opciones_pdv = PuntodeVenta.objects.all().values().filter(estado_id=1).order_by("nombre")
                     datos ={
                         "r2" : "¡ La Mesa ya Existe ("+str(nom).upper()+") ya Existe !",
                         "mesa" : mesa,
-                        "opciones_pdv" : opciones_pdv
+                        "opciones_pdv" : opciones_pdv,
+                        "claseUsuario" : claseUsuario
                     }
                     return render(request, "administrar_mesas.html", datos)
                 else:
@@ -257,7 +166,8 @@ def registrar_mesa(request):
                         nombre=nom, 
                         pdv_id = pdv,
                         usuario_id= idUsuario,
-                        estado= est
+                        estado_mesa= est,
+                        estado_id=1,
                     )
                     mesa.save()
                     mesa_id = mesa.id
@@ -272,22 +182,24 @@ def registrar_mesa(request):
                         usuario_id = usuario
                     )
                     his.save()
-                    mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                    opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
+                    mesa = Mesa.objects.select_related('pdv').filter(estado_id=1).order_by("nombre")
+                    opciones_pdv = PuntodeVenta.objects.all().values().filter(estado_id=1).order_by("nombre")
                     datos = {
                         "mesa" : mesa,
                         "opciones_pdv" : opciones_pdv,
                         "nomUsuario" : nomUsuario,
-                        "r" : f"¡ Mesa Creada ({ mesa_id }) !"
+                        "r" : f"¡ Mesa Creada ({ mesa_id }) !",
+                        "claseUsuario" : claseUsuario
                     }
                     return render(request, "administrar_mesas.html", datos)
             else:
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                mesa = Mesa.objects.select_related('pdv').order_by("nombre")
+                opciones_pdv = PuntodeVenta.objects.all().values().filter(estado_id=1).order_by("nombre")
+                mesa = Mesa.objects.select_related('pdv').filter(estado_id=1).order_by("nombre")
                 datos ={
                     "r2" : "¡ Debe Presionar el Botón del Formulario !",
                     "mesa" : mesa,
-                    "opciones_pdv" : opciones_pdv
+                    "opciones_pdv" : opciones_pdv,
+                    "claseUsuario" : claseUsuario
                 }
                 return render(request, "administrar_mesas.html", datos)
         else:
@@ -303,55 +215,25 @@ def form_act_mes(request, id):
     nomUsuario = request.session.get("nomUsuario")
     idUsuario = request.session.get("idUsuario")
     claseUsuario = request.session.get("claseUsuario")
-
     rs = Mesa.objects.filter(id = id)
     if estadoSesion is True:
-        if claseUsuario.upper() == "MESERO":
+        if claseUsuario.upper() == "MESERO" or claseUsuario.upper() == "ADMINISTRADOR"  :
             if rs :
-                mes = Mesa.objects.select_related('pdv').order_by("nombre")
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                datos = { "rs":rs,"mes" : mes, "nomUsuario" : nomUsuario, "opciones_pdv" : opciones_pdv} 
+                mes = Mesa.objects.select_related('pdv').filter(estado_id=1).order_by("nombre")
+                opciones_pdv = PuntodeVenta.objects.all().values().filter(estado_id=1).order_by("nombre")
+                datos = { "rs":rs,"mes" : mes, "nomUsuario" : nomUsuario, "opciones_pdv" : opciones_pdv, "claseUsuario" : claseUsuario} 
                 return render(request, "actualizar_mesas.html", datos)
             else:
-                mes = Mesa.objects.select_related('pdv').order_by("nombre")
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                datos = { "r2" : "El id de la Mesa ("+str(id)+") No Existe. Imposibre Eliminar" , "mes" : mes, "nomUsuario" : nomUsuario, "opciones_pdv" : opciones_pdv} 
+                mes = Mesa.objects.select_related('pdv').filter(estado_id=1).order_by("nombre")
+                opciones_pdv = PuntodeVenta.objects.all().values().filter(estado_id=1).order_by("nombre")
+                datos = { "r2" : "El id de la Mesa ("+str(id)+") No Existe. Imposibre Eliminar" , "mes" : mes, "nomUsuario" : nomUsuario, "opciones_pdv" : opciones_pdv, "claseUsuario" : claseUsuario} 
                 return render(request, "administrar_mesas.html", datos)
         else:
             datos = { "r2" : "¡ No Tiene Permisos Para Acceder. Privilegios Insuficientes !" }
             return render(request, 'index.html', datos)
-        
     else:
         datos = { "r2" : "¡ Debe Iniciar Sesión Para Acceder !" }
         return render(request, "index.html", datos)
-
-def form_act_mes_adm(request, id):
-    estadoSesion = request.session.get("estadoSesion")
-    nomUsuario = request.session.get("nomUsuario")
-    idUsuario = request.session.get("idUsuario")
-    claseUsuario = request.session.get("claseUsuario")
-
-    rs = Mesa.objects.filter(id = id)
-    if estadoSesion is True:
-        if claseUsuario.upper() == "ADMINISTRADOR":
-            if rs :
-                mes = Mesa.objects.select_related('pdv').order_by("nombre")
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                datos = { "rs":rs,"mes" : mes, "nomUsuario" : nomUsuario, "opciones_pdv" : opciones_pdv} 
-                return render(request, "actualizar_mesas_admin.html", datos)
-            else:
-                mes = Mesa.objects.select_related('pdv').order_by("nombre")
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                datos = { "r2" : "El id de la Mesa ("+str(id)+") No Existe. Imposibre Eliminar" , "mes" : mes, "nomUsuario" : nomUsuario, "opciones_pdv" : opciones_pdv} 
-                return render(request, "administrar_admin_mesas.html", datos)
-        else:
-            datos = { "r2" : "¡ No Tiene Permisos Para Acceder. Privilegios Insuficientes !" }
-            return render(request, 'index.html', datos)
-        
-    else:
-        datos = { "r2" : "¡ Debe Iniciar Sesión Para Acceder !" }
-        return render(request, "index.html", datos)
-
 
 def actualizar_mesa(request, id):
     estadoSesion = request.session.get("estadoSesion")
@@ -359,45 +241,60 @@ def actualizar_mesa(request, id):
     idUsuario = request.session.get("idUsuario")
     claseUsuario = request.session.get("claseUsuario")
     if estadoSesion is True:
-        if claseUsuario.upper() == "MESERO":
+        if claseUsuario.upper() == "MESERO" or claseUsuario.upper() == "ADMINISTRADOR":
             if request.method == "POST":
-                nom = request.POST["txtnommes"]
+                nom = request.POST["txtnommes"].upper()
                 pdv = request.POST["cbopunven"]
                 est = request.POST["cboest"]
-                mes = Mesa.objects.get(id=id)
-                mes.nombre = nom
-                mes.pdv_id = pdv
-                mes.estado = est
-                mes.save()
-                id_mes = mes.id
-                descripcion = f"Registro modificado ({ id_mes })"
-                tabla = "safari_mesa"
-                fechayhora = datetime.now()
-                usuario = request.session["idUsuario"]
-                his = Historial(
-                    descripcion_historial = descripcion,
-                    tabla_afectada_historial = tabla,
-                    fecha_hora_historial = fechayhora,
-                    usuario_id = usuario
-                )
-                his.save()
-                mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                datos = {
-                    "opciones_pdv": opciones_pdv,
-                    "nomUsuario" : nomUsuario,
-                    "mesa" : mesa,
-                    "r" : f"¡ Mesa ({ id_mes }) Modificado Correctamente !"
-                }
-                return render(request, "administrar_mesas.html", datos)
+                comprobarNombreMesa = Mesa.objects.select_related('pdv').filter(nombre = nom, pdv = pdv, estado_id = 1)
+                if comprobarNombreMesa:
+                    mesa = Mesa.objects.select_related('pdv').filter(estado_id=1).order_by("nombre")
+                    opciones_pdv = PuntodeVenta.objects.all().values().filter(estado_id=1).order_by("nombre")
+                    datos ={
+                        "r2" : "¡ La Mesa ya Existe ("+str(nom).upper()+") ya Existe !",
+                        "mesa" : mesa,
+                        "opciones_pdv" : opciones_pdv,
+                        "claseUsuario" : claseUsuario
+                    }
+                    return render(request, "administrar_mesas.html", datos)
+                else:
+                    mes = Mesa.objects.get(id=id)
+                    mes.nombre = nom
+                    mes.pdv_id = pdv
+                    mes.estado_mesa = est
+                    mes.estado_id =1
+                    mes.save()
+                    id_mes = mes.id
+                    descripcion = f"Mesa modificada ({ id_mes })"
+                    tabla = "safari_mesa"
+                    fechayhora = datetime.now()
+                    usuario = request.session["idUsuario"]
+                    his = Historial(
+                        descripcion_historial = descripcion,
+                        tabla_afectada_historial = tabla,
+                        fecha_hora_historial = fechayhora,
+                        usuario_id = usuario
+                    )
+                    his.save()
+                    mesa = Mesa.objects.select_related('pdv').filter(estado_id=1).order_by("nombre")
+                    opciones_pdv = PuntodeVenta.objects.all().filter(estado_id=1).order_by("nombre")
+                    datos = {
+                        "opciones_pdv": opciones_pdv,
+                        "nomUsuario" : nomUsuario,
+                        "mesa" : mesa,
+                        "r" : f"¡ Mesa ({ id_mes }) Modificada Correctamente !",
+                        "claseUsuario" : claseUsuario
+                    }
+                    return render(request, "administrar_mesas.html", datos)
             else:
-                mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
+                mesa = Mesa.objects.select_related('pdv').filter(estado_id=1).order_by("nombre")
+                opciones_pdv = PuntodeVenta.objects.all().filter(estado_id=1).order_by("nombre")
                 datos = {
                     "opciones_pdv": opciones_pdv,
                     "nomUsuario" : nomUsuario,
                     "mesa" : mesa,
-                    "r2" : "¡ No Se Puede Procesar La Solicitud !"
+                    "r2" : "¡ No Se Puede Procesar La Solicitud !",
+                    "claseUsuario" : claseUsuario
                 }
                 return render(request, "administrar_mesas.html", datos)
         else:
@@ -407,62 +304,6 @@ def actualizar_mesa(request, id):
     else:
         datos = { "r2" : "¡ Debe Iniciar Sesión Para Acceder !" }
         return render(request, "index.html", datos)
-
-def actualizar_mesa_admin(request, id):
-    estadoSesion = request.session.get("estadoSesion")
-    nomUsuario = request.session.get("nomUsuario")
-    idUsuario = request.session.get("idUsuario")
-    claseUsuario = request.session.get("claseUsuario")
-    if estadoSesion is True:
-        if claseUsuario.upper() == "ADMINISTRADOR":
-            if request.method == "POST":
-                nom = request.POST["txtnommes"]
-                pdv = request.POST["cbopunven"]
-                est = request.POST["cboest"]
-                mes = Mesa.objects.get(id=id)
-                mes.nombre = nom
-                mes.pdv_id = pdv
-                mes.estado = est
-                mes.save()
-                id_mes = mes.id
-                descripcion = f"Registro modificado ({ id_mes })"
-                tabla = "safari_mesa"
-                fechayhora = datetime.now()
-                usuario = request.session["idUsuario"]
-                his = Historial(
-                    descripcion_historial = descripcion,
-                    tabla_afectada_historial = tabla,
-                    fecha_hora_historial = fechayhora,
-                    usuario_id = usuario
-                )
-                his.save()
-                mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                datos = {
-                    "opciones_pdv": opciones_pdv,
-                    "nomUsuario" : nomUsuario,
-                    "mesa" : mesa,
-                    "r" : f"¡ Mesa ({ id_mes }) Modificado Correctamente !"
-                }
-                return render(request, "administrar_admin_mesas.html", datos)
-            else:
-                mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                datos = {
-                    "opciones_pdv": opciones_pdv,
-                    "nomUsuario" : nomUsuario,
-                    "mesa" : mesa,
-                    "r2" : "¡ No Se Puede Procesar La Solicitud !"
-                }
-                return render(request, "administrar_admin_mesas.html", datos)
-        else:
-            datos = { "r2" : "¡ No Tiene Permisos Para Acceder. Privilegios Insuficientes !" }
-            return render(request, 'index.html', datos)
-        
-    else:
-        datos = { "r2" : "¡ Debe Iniciar Sesión Para Acceder !" }
-        return render(request, "index.html", datos)
-
 
 def eliminar_mesas(request, id):
     estadoSesion = request.session.get("estadoSesion")
@@ -470,10 +311,11 @@ def eliminar_mesas(request, id):
     claseUsuario = request.session.get("claseUsuario")
     idUsuario = request.session.get("idUsuario")
     if estadoSesion is True:
-        if claseUsuario.upper() == "MESERO":
-            mes = Mesa.objects.filter(id = id)
-            if mes.exists():
-                mes.delete()
+        if claseUsuario.upper() == "MESERO" or claseUsuario.upper() == "ADMINISTRADOR":
+            mes = Mesa.objects.filter(id = id).first()
+            if mes is not None:
+                mes.estado_id=2
+                mes.save()
                 descripcion = f"Mesa eliminada ({ id })"
                 tabla = "safari_mesa"
                 fechayhora = datetime.now()
@@ -485,23 +327,25 @@ def eliminar_mesas(request, id):
                     usuario_id = usuario
                 )
                 his.save()
-                mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
+                mesa = Mesa.objects.select_related('pdv').filter(estado_id=1).order_by("nombre")
+                opciones_pdv = PuntodeVenta.objects.all().values().filter(estado_id=1).order_by("nombre")
                 datos = {
                     "opciones_pdv": opciones_pdv,
                     "nomUsuario" : nomUsuario,
                     "mesa" : mesa,
-                    "r" : "¡ Mesa Eliminada Correctamente !"
+                    "r" : "¡ Mesa Eliminada Correctamente !",
+                    "claseUsuario" : claseUsuario
                 }
                 return render(request, "administrar_mesas.html", datos)
             else:
-                mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
+                mesa = Mesa.objects.select_related('pdv').filter(estado_id=1).order_by("nombre")
+                opciones_pdv = PuntodeVenta.objects.all().values().filter(estado_id=1).order_by("nombre")
                 datos = {
                     "opciones_pdv": opciones_pdv,
                     "nomUsuario" : nomUsuario,
                     "mesa" : mesa,
-                    "r2" : f"¡ El ID ({str(id)}) No Existe. Imposible Eliminar !"
+                    "r2" : f"¡ El ID ({str(id)}) No Existe. Imposible Eliminar !",
+                    "claseUsuario" : claseUsuario
                 }
                 return render(request, "administrar_mesas.html", datos)
         else:
@@ -510,64 +354,15 @@ def eliminar_mesas(request, id):
     else:
         datos = { "r2" : "¡ Debe Iniciar Sesión Para Acceder !" }
         return render(request, "index.html", datos)
-
-def eliminar_mesas_admin(request, id):
-    estadoSesion = request.session.get("estadoSesion")
-    nomUsuario = request.session.get("nomUsuario")
-    claseUsuario = request.session.get("claseUsuario")
-    idUsuario = request.session.get("idUsuario")
-    if estadoSesion is True:
-        if claseUsuario.upper() == "ADMINISTRADOR":
-            mes = Mesa.objects.filter(id = id)
-            if mes.exists():
-                mes.delete()
-                descripcion = f"Mesa eliminada ({ id })"
-                tabla = "safari_mesa"
-                fechayhora = datetime.now()
-                usuario = request.session["idUsuario"]
-                his = Historial(
-                    descripcion_historial = descripcion,
-                    tabla_afectada_historial = tabla,
-                    fecha_hora_historial = fechayhora,
-                    usuario_id = usuario
-                )
-                his.save()
-                mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                datos = {
-                    "opciones_pdv": opciones_pdv,
-                    "nomUsuario" : nomUsuario,
-                    "mesa" : mesa,
-                    "r" : "¡ Mesa Eliminada Correctamente !"
-                }
-                return render(request, "administrar_admin_mesas.html", datos)
-            else:
-                mesa = Mesa.objects.select_related('pdv').order_by("nombre")
-                opciones_pdv = PuntodeVenta.objects.all().values().order_by("nombre")
-                datos = {
-                    "opciones_pdv": opciones_pdv,
-                    "nomUsuario" : nomUsuario,
-                    "mesa" : mesa,
-                    "r2" : f"¡ El ID ({str(id)}) No Existe. Imposible Eliminar !"
-                }
-                return render(request, "administrar_admin_mesas.html", datos)
-        else:
-            datos = { "r2" : "¡ No Tiene Permisos Para Acceder. Privilegios Insuficientes !" }
-            return render(request, 'index.html', datos)
-    else:
-        datos = { "r2" : "¡ Debe Iniciar Sesión Para Acceder !" }
-        return render(request, "index.html", datos)
-
 
 
 def administrar_usuarios(request):
     estadoSesion = request.session.get("estadoSesion")
     nomUsuario = request.session.get("nomUsuario")
     claseUsuario = request.session.get("claseUsuario")
-
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
-            usu = Usuario.objects.select_related('clase').all().order_by("nombre")
+            usu = Usuario.objects.select_related('clase').all().filter(estado_id=1).order_by("nombre")
             opciones_clases = Clases.objects.all().values().order_by("nombre")
             datos = {"usu" : usu,
                     "nomUsuario": nomUsuario, "opciones_clases" : opciones_clases}
@@ -586,30 +381,31 @@ def registrar_usuario(request):
     claseUsuario = request.session.get("claseUsuario")
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
-            comprobarUsuario = Usuario.objects.filter(nombre=nom)
-            if comprobarUsuario.exists():
-                usu = Usuario.objects.select_related('clase').all().order_by("nombre")
-                opciones_clases = Clases.objects.all().values().order_by("nombre")
-                datos = {
-                    "r2": f"¡ El Usuario ({nom.upper()}) ya Existe !",
-                    "usu": usu,
-                    "opciones_clases": opciones_clases,
-                    "nomUsuario": nomUsuario
-                }
-                return render(request, "administrar_usuarios.html", datos)
-            else:
-                if request.method == "POST":
-                    nom = request.POST["txtnomusu"]
-                    con = request.POST["txtconusu"]
-                    cla = request.POST["cboclausu"]
+            if request.method == "POST":
+                nom = request.POST["txtnomusu"].upper()
+                con = request.POST["txtconusu"]
+                cla = request.POST["cboclausu"]
+                comprobarNombreUsu = Usuario.objects.filter(nombre = nom,estado_id =1)
+                if comprobarNombreUsu:
+                    usu = Usuario.objects.select_related('clase').filter(estado_id=1).order_by("nombre")
+                    opciones_clases = Clases.objects.all().values().filter().order_by("nombre")
+                    datos ={
+                        "r2" : "¡ El usuario ("+str(nom).upper()+") ya Existe !",
+                        "usu" : usu,
+                        "opciones_clases" : opciones_clases,
+                        "claseUsuario" : claseUsuario
+                    }
+                    return render(request, "administrar_usuarios.html", datos)            
+                else:
                     usu = Usuario(
-                        nombre=nom,
-                        password=con,
-                        clase_id=cla
-                    )
+                            nombre=nom,
+                            password=con,
+                            clase_id=cla,
+                            estado_id =1
+                        )
                     usu.save()
                     usu_id = usu.id
-                    descripcion = f"Registro insertado ({ usu_id })"
+                    descripcion = f"Usuario ({ usu_id }) creado correctamente"
                     tabla = "safari.usuario"
                     fechayhora = datetime.now()
                     usuario = request.session["idUsuario"]
@@ -620,20 +416,21 @@ def registrar_usuario(request):
                         usuario_id = usuario
                     )
                     his.save()
-                    usu = Usuario.objects.all().values().order_by("nombre")
+                    usu = Usuario.objects.select_related('clase').filter(estado_id=1).order_by("nombre")
                     opciones_clases = Clases.objects.all().values().order_by("nombre")
                     datos = {
                         "usu" : usu,
                         "opciones_clases": opciones_clases,
                         "nomUsuario" : nomUsuario,
-                        "r" : f"¡ Usuario Creado ({ usu_id }) !"
+                        "r" : f"¡ Usuario Creado ({ usu_id }) !",
+                        "claseUsuario" : claseUsuario
                     }
                     return render(request, "administrar_usuarios.html", datos)
-                else:
-                    usu = Usuario.objects.all().values().order_by("nombre")
-                    opciones_clases = Clases.objects.all().values().order_by("nombre")
-                    datos = { "r2" : "¡ No Se Puede Procesar La Solicitud !", "opciones_clases" : opciones_clases, "usu" : usu }
-                    return render(request, "administrar_usuarios.html", datos)
+            else:
+                usu = Usuario.objects.select_related('clase').filter(estado_id=1).order_by("nombre")
+                opciones_clases = Clases.objects.all().values().order_by("nombre")
+                datos = { "r2" : "¡ No Se Puede Procesar La Solicitud !", "opciones_clases" : opciones_clases, "usu" : usu }
+                return render(request, "administrar_usuarios.html", datos)
         else:
             datos = { "r2" : "¡ No Tiene Permisos Para Acceder. Privilegios Insuficientes !" }
             return render(request, 'index.html', datos)
@@ -648,23 +445,21 @@ def form_act_usu(request, id):
     claseUsuario = request.session.get("claseUsuario")
 
     rs = Usuario.objects.filter(id = id)
-    
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
             if rs :
-                usu = Usuario.objects.select_related('clase').order_by("nombre")
+                usu = Usuario.objects.select_related('clase').filter(estado_id = 1).order_by("nombre")
                 opciones_clases = Clases.objects.all().values().order_by("nombre")
                 datos = { "rs":rs,"usu" : usu, "nomUsuario" : nomUsuario, "opciones_clases" : opciones_clases} 
                 return render(request, "actualizar_usuarios.html", datos)
             else:
-                usu = Usuario.objects.select_related('clase').order_by("nombre")
+                usu = Usuario.objects.select_related('clase').filter(estado_id = 1).order_by("nombre")
                 opciones_clases = Clases.objects.all().values().order_by("nombre")
-                datos = { "r2" : "El id del Usuario ("+str(id)+") No Existe. Imposibre Eliminar" , "usu" : usu, "nomUsuario" : nomUsuario, "opciones_clases" : opciones_clases} 
+                datos = { "r2" : "El id del Usuario ("+str(id)+") No Existe. Imposibre Actualizar" , "usu" : usu, "nomUsuario" : nomUsuario, "opciones_clases" : opciones_clases} 
                 return render(request, "administrar_usuarios.html", datos)
         else:
             datos = { "r2" : "¡ No Tiene Permisos Para Acceder. Privilegios Insuficientes !" }
             return render(request, 'index.html', datos)
-        
     else:
         datos = { "r2" : "¡ Debe Iniciar Sesión Para Acceder !" }
         return render(request, "index.html", datos)
@@ -677,47 +472,53 @@ def actualizar_usuario(request, id):
 
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
-
             if request.method == "POST":
-                nom = request.POST["txtnomusu"]
+                nom = request.POST["txtnomusu"].upper()
                 con = request.POST["txtconusu"]
                 cla = request.POST["cboclausu"]
-                usu = Usuario.objects.get(id=id)
-                usu.nombre = nom
-                usu.password = con
-                usu.clase_id = cla
-                usu.save()
+                comprobarNombreUsu = Usuario.objects.filter(nombre = nom, estado_id =1)
+                if comprobarNombreUsu:
+                    usu = Usuario.objects.select_related('clase').filter(estado_id=1).order_by("nombre")
+                    opciones_clases = Clases.objects.all().values().filter().order_by("nombre")
+                    datos ={
+                        "r2" : "¡ El usuario ("+str(nom).upper()+") ya Existe !",
+                        "usu" : usu,
+                        "opciones_clases" : opciones_clases,
+                        "claseUsuario" : claseUsuario
+                    }
+                    return render(request, "administrar_usuarios.html", datos)       
+                else: 
+                    usu = Usuario.objects.get(id=id)
+                    usu.nombre = nom
+                    usu.password = con
+                    usu.clase_id = cla
+                    usu.estado_id = 1
+                    usu.save()
+                    id_usu = usu.id
+                    descripcion = f"Usuario modificado ({ id })"
+                    tabla = "safari_usuario"
+                    fechayhora = datetime.now()
+                    usuario = request.session["idUsuario"]
+                    his = Historial(
+                        descripcion_historial = descripcion,
+                        tabla_afectada_historial = tabla,
+                        fecha_hora_historial = fechayhora,
+                        usuario_id = usuario
+                    )
+                    his.save()
+                    opciones_clases = Clases.objects.all().values().order_by("nombre")
+                    usu = Usuario.objects.select_related('clase').filter(estado_id = 1).order_by("-id")
+                    datos = {
+                        "opciones_clases": opciones_clases,
+                        "nomUsuario" : nomUsuario,
+                        "usu" : usu,
+                        "r" : f"¡ Usuario ({ id_usu }) Modificado Correctamente !"
+                    }
 
-                id_usu = usu.id
-
-
-                descripcion = f"Registro modificado ({ id })"
-                tabla = "safari_usuario"
-                fechayhora = datetime.now()
-                usuario = request.session["idUsuario"]
-                his = Historial(
-                    descripcion_historial = descripcion,
-                    tabla_afectada_historial = tabla,
-                    fecha_hora_historial = fechayhora,
-                    usuario_id = usuario
-                )
-                his.save()
-
-
-                opciones_clases = Clases.objects.all().values().order_by("nombre")
-                usu = Usuario.objects.select_related('clase').filter().order_by("-id")
-                datos = {
-                    "opciones_clases": opciones_clases,
-                    "nomUsuario" : nomUsuario,
-                    "usu" : usu,
-                    "r" : f"¡ Usuario ({ id_usu }) Modificado Correctamente !"
-                }
-
-                return render(request, "administrar_usuarios.html", datos)
-            
+                    return render(request, "administrar_usuarios.html", datos)
             else:
                 opciones_clases = Clases.objects.all().values().order_by("nombre")
-                usu = Usuario.objects.select_related('clase').filter(usuario__nombre=nomUsuario).order_by("-id")
+                usu = Usuario.objects.select_related('clase').filter(usuario__nombre=nomUsuario, estado_id = 1).order_by("-id")
                 datos = {
                     "opciones_clases": opciones_clases,
                     "nomUsuario" : nomUsuario,
@@ -741,9 +542,10 @@ def eliminar_usuario(request, id):
     idUsuario = request.session.get("idUsuario")
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
-            usu = Usuario.objects.filter(id = id)
-            if usu.exists():
-                usu.delete()
+            usu = Usuario.objects.filter(id = id).first()
+            if usu is not None:
+                usu.estado_id =2
+                usu.save()
                 descripcion = f"Usuario eliminado ({ id })"
                 tabla = "safari_usuario"
                 fechayhora = datetime.now()
@@ -756,7 +558,7 @@ def eliminar_usuario(request, id):
                 )
                 his.save()
                 opciones_clases = Clases.objects.all().values().order_by("nombre")
-                usu = Usuario.objects.select_related('clase').filter().order_by("-id")
+                usu = Usuario.objects.select_related('clase').filter(estado_id = 1).order_by("-id")
                 datos = {
                     "opciones_clases": opciones_clases,
                     "nomUsuario" : nomUsuario,
@@ -766,7 +568,7 @@ def eliminar_usuario(request, id):
                 return render(request, "administrar_usuarios.html", datos)
             else:
                 opciones_clases = Clases.objects.all().values().order_by("nombre")
-                usu = Usuario.objects.select_related('clase').filter().order_by("-id")
+                usu = Usuario.objects.select_related('clase').filter(estado_id = 1).order_by("-id")
                 datos = {
                     "opciones_clases": opciones_clases,
                     "nomUsuario" : nomUsuario,
@@ -788,7 +590,7 @@ def administrar_pdv(request):
     claseUsuario = request.session.get("claseUsuario")
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
-            pdv = PuntodeVenta.objects.select_related('usuario').all().order_by("nombre")
+            pdv = PuntodeVenta.objects.select_related('usuario').all().filter(estado_id = 1).order_by("nombre")
             datos = {"pdv" : pdv,
                     "nomUsuario": nomUsuario}
             return render(request, 'administrar_pdv.html', datos)
@@ -807,34 +609,46 @@ def registrar_pdv(request):
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
             if request.method == "POST":
-                nom = request.POST["txtnompdv"]
-                pdv = PuntodeVenta(
-                    nombre=nom,
-                    usuario_id = idUsuario
-                )
-                pdv.save()
-                pdv_id = pdv.id
-                descripcion = f"Punto de Venta insertado ({ pdv_id })"
-                tabla = "safari.puntodeventa"
-                fechayhora = datetime.now()
-                usuario = request.session["idUsuario"]
-                his = Historial(
-                    descripcion_historial = descripcion,
-                    tabla_afectada_historial = tabla,
-                    fecha_hora_historial = fechayhora,
-                    usuario_id = usuario
-                )
-                his.save()
-                pdv = PuntodeVenta.objects.select_related('usuario').all().order_by("nombre")
-                datos = {
-                    "pdv" : pdv,
-                    "nomUsuario" : nomUsuario,
-                    "r" : f"¡ Punto de venta Creado ({ pdv_id }) !"
-                }
-                return render(request, "administrar_pdv.html", datos)
+                nom = request.POST["txtnompdv"].upper()
+                comprobarNombrePdv = PuntodeVenta.objects.filter(nombre = nom, estado_id=1)
+                if comprobarNombrePdv:
+                    pdv = PuntodeVenta.objects.select_related('usuario').filter(estado_id=1).order_by("nombre")
+                    datos ={
+                        "r2" : "¡ El Punto de Venta ("+str(nom).upper()+") ya Existe !",
+                        "pdv" : pdv,
+                        "claseUsuario" : claseUsuario,
+                        "nomUsuario" : nomUsuario
+                    }
+                    return render(request, "administrar_pdv.html", datos)           
+                else:
+                    pdv = PuntodeVenta(
+                        nombre=nom,
+                        usuario_id = idUsuario,
+                        estado_id = 1
+                    )
+                    pdv.save()
+                    pdv_id = pdv.id
+                    descripcion = f"Punto de Venta creado ({ pdv_id })"
+                    tabla = "safari.puntodeventa"
+                    fechayhora = datetime.now()
+                    usuario = request.session["idUsuario"]
+                    his = Historial(
+                        descripcion_historial = descripcion,
+                        tabla_afectada_historial = tabla,
+                        fecha_hora_historial = fechayhora,
+                        usuario_id = usuario
+                    )
+                    his.save()
+                    pdv = PuntodeVenta.objects.select_related('usuario').all().filter(estado_id=1).order_by("nombre")
+                    datos = {
+                        "pdv" : pdv,
+                        "nomUsuario" : nomUsuario,
+                        "r" : f"¡ Punto de venta Creado ({ pdv_id }) !"
+                    }
+                    return render(request, "administrar_pdv.html", datos)
             else:
                 pdv = PuntodeVenta.objects.select_related('usuario').all().order_by("nombre")
-                datos = { "r2" : "¡ No Se Puede Procesar La Solicitud !", "pdv" : pdv }
+                datos = { "r2" : "¡ No Se Puede Procesar La Solicitud !", "pdv" : pdv, "nomUsuario" : nomUsuario }
                 return render(request, "administrar_pdv.html", datos)
         else:
             datos = { "r2" : "¡ No Tiene Permisos Para Acceder. Privilegios Insuficientes !" }
@@ -848,17 +662,15 @@ def form_act_pdv(request, id):
     nomUsuario = request.session.get("nomUsuario")
     idUsuario = request.session.get("idUsuario")
     claseUsuario = request.session.get("claseUsuario")
-
     rs = PuntodeVenta.objects.filter(id = id)
-    
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
             if rs :
-                pdv = PuntodeVenta.objects.select_related('usuario').order_by("nombre")
+                pdv = PuntodeVenta.objects.select_related('usuario').filter(estado_id = 1).order_by("nombre")
                 datos = { "rs":rs,"pdv" : pdv, "nomUsuario" : nomUsuario} 
                 return render(request, "actualizar_pdv.html", datos)
             else:
-                pdv = PuntodeVenta.objects.select_related('usuario').order_by("nombre")
+                pdv = PuntodeVenta.objects.select_related('usuario').filter(estado_id = 1).order_by("nombre")
                 datos = { "r2" : "El id del Usuario ("+str(id)+") No Existe. Imposibre Eliminar" , "pdv" : pdv, "nomUsuario" : nomUsuario} 
                 return render(request, "administrar_pdv.html", datos)
         else:
@@ -878,32 +690,44 @@ def actualizar_pdv(request, id):
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
             if request.method == "POST":
-                nom = request.POST["txtnompdv"]
-                pdv = PuntodeVenta.objects.get(id=id)
-                pdv.nombre = nom
-                pdv.usuario_id = idUsuario
-                pdv.save()
-                pdv_id = pdv.id
-                descripcion = f"Punto de Venta insertado ({ pdv_id })"
-                tabla = "safari.puntodeventa"
-                fechayhora = datetime.now()
-                usuario = request.session["idUsuario"]
-                his = Historial(
-                    descripcion_historial = descripcion,
-                    tabla_afectada_historial = tabla,
-                    fecha_hora_historial = fechayhora,
-                    usuario_id = usuario
-                )
-                his.save()
-                pdv = PuntodeVenta.objects.select_related('usuario').all().order_by("nombre")
-                datos = {
-                    "pdv" : pdv,
-                    "nomUsuario" : nomUsuario,
-                    "r" : f"¡ Punto de venta actualizado ({ pdv_id }) !"
-                }
-                return render(request, "administrar_pdv.html", datos)
+                nom = request.POST["txtnompdv"].upper()
+                comprobarNombrePdv = PuntodeVenta.objects.filter(nombre = nom, estado_id=1)
+                if comprobarNombrePdv:
+                    pdv = PuntodeVenta.objects.select_related('usuario').filter(estado_id=1).order_by("nombre")
+                    datos ={
+                        "r2" : "¡ El Punto de Venta ("+str(nom).upper()+") ya Existe !",
+                        "pdv" : pdv,
+                        "claseUsuario" : claseUsuario,
+                        "nomUsuario" : nomUsuario
+                    }
+                    return render(request, "administrar_pdv.html", datos)          
+                else:
+                    pdv = PuntodeVenta.objects.get(id=id)
+                    pdv.nombre = nom
+                    pdv.usuario_id = idUsuario
+                    pdv.estado_id = 1
+                    pdv.save()
+                    pdv_id = pdv.id
+                    descripcion = f"Punto de Venta actualizado ({ pdv_id })"
+                    tabla = "safari.puntodeventa"
+                    fechayhora = datetime.now()
+                    usuario = request.session["idUsuario"]
+                    his = Historial(
+                        descripcion_historial = descripcion,
+                        tabla_afectada_historial = tabla,
+                        fecha_hora_historial = fechayhora,
+                        usuario_id = usuario
+                    )
+                    his.save()
+                    pdv = PuntodeVenta.objects.select_related('usuario').all().filter(estado_id = 1).order_by("nombre")
+                    datos = {
+                        "pdv" : pdv,
+                        "nomUsuario" : nomUsuario,
+                        "r" : f"¡ Punto de venta actualizado ({ pdv_id }) !"
+                    }
+                    return render(request, "administrar_pdv.html", datos)
             else:
-                pdv = PuntodeVenta.objects.select_related('usuario').all().order_by("nombre")
+                pdv = PuntodeVenta.objects.select_related('usuario').all().filter(estado_id = 1).order_by("nombre")
                 datos = { "r2" : "¡ No Se Puede Procesar La Solicitud !", "pdv" : pdv }
                 return render(request, "administrar_pdv.html", datos)
         else:
@@ -920,9 +744,10 @@ def eliminar_pdv(request, id):
     idUsuario = request.session.get("idUsuario")
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
-            pdv = PuntodeVenta.objects.filter(id = id)
-            if pdv.exists():
-                pdv.delete()
+            pdv = PuntodeVenta.objects.filter(id = id).first()
+            if pdv is not None:
+                pdv.estado_id = 2
+                pdv.save()
                 descripcion = f"Punto de Venta eliminado ({ id })"
                 tabla = "safari_puntodeventa"
                 fechayhora = datetime.now()
@@ -934,15 +759,15 @@ def eliminar_pdv(request, id):
                     usuario_id = usuario
                 )
                 his.save()
-                pdv = PuntodeVenta.objects.select_related('usuario').filter().order_by("-id")
+                pdv = PuntodeVenta.objects.select_related('usuario').filter(estado_id = 1).order_by("-id")
                 datos = {
                     "nomUsuario" : nomUsuario,
                     "pdv" : pdv,
-                    "r" : "¡ Usuario Eliminado Correctamente !"
+                    "r" : "¡ Punto de venta Eliminado Correctamente !"
                 }
                 return render(request, "administrar_pdv.html", datos)
             else:
-                pdv = PuntodeVenta.objects.select_related('usuario').filter().order_by("-id")
+                pdv = PuntodeVenta.objects.select_related('usuario').filter(estado_id = 1).order_by("-id")
                 datos = {
                     "nomUsuario" : nomUsuario,
                     "pdv" : pdv,
@@ -964,7 +789,7 @@ def ver_ventas(request):
 
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
-            puntos = PuntodeVenta.objects.all().order_by("nombre")
+            puntos = PuntodeVenta.objects.all().filter(estado_id = 1).order_by("nombre")
             ventas = Venta.objects.select_related('puntoventa').all().order_by("-fecha")
 
             punto = request.GET.get("cbo_punto")
@@ -999,18 +824,18 @@ def ver_estadisticas(request):
     if estadoSesion is True:
         if claseUsuario.upper() == "ADMINISTRADOR":
             hoy = datetime.now().date()
-            ventas_hoy = Venta.objects.filter(fecha__date=hoy, estado="PAGADA")
+            ventas_hoy = Venta.objects.filter(fecha__date=hoy, estado_v="PAGADA")
             total_ventas_hoy = ventas_hoy.aggregate(total=Sum('total'))['total'] or 0
 
             cantidad_ordenes = ventas_hoy.count()
 
             productos_top = (
-                DetalleVenta.objects.filter(venta__estado="PAGADA").values(id_producto=F('producto__id'), nombre=F('producto__nombre'))
+                DetalleVenta.objects.filter(venta__estado_v="PAGADA").values(id_producto=F('producto__id'), nombre=F('producto__nombre'))
                 .annotate(cantidad=Sum('cantidad'), recaudado=Sum('subtotal')).order_by('-cantidad')[:10]
             )
 
-            mesas_ocupadas = Mesa.objects.filter(estado="OCUPADA").count()
-            mesas_libres = Mesa.objects.filter(estado="LIBRE").count()
+            mesas_ocupadas = Mesa.objects.filter(estado_mesa="OCUPADA").count()
+            mesas_libres = Mesa.objects.filter(estado_mesa="LIBRE").count()
 
             datos = {
                 "nomUsuario": nomUsuario,
@@ -1033,11 +858,10 @@ def administrar_productos(request):
     estadoSesion = request.session.get("estadoSesion")
     nomUsuario = request.session.get("nomUsuario")
     claseUsuario = request.session.get("claseUsuario")
-
     if estadoSesion is True:
-        if claseUsuario.upper() == "ADMINISTRADOR":
-            pro = Producto.objects.select_related('usuario').all().order_by("nombre")
-            datos = {"pro" : pro, "nomUsuario": nomUsuario}
+        if claseUsuario.upper() == "ADMINISTRADOR" or claseUsuario.upper() == "CAJERO":
+            pro = Producto.objects.select_related('usuario').filter(estado_id = 1).all().order_by("nombre")
+            datos = {"pro" : pro, "nomUsuario": nomUsuario, "claseUsuario" : claseUsuario}
             return render(request, 'administrar_productos.html', datos)
         else:
             datos = { "r2" : "¡ No Tiene Permisos Para Acceder. Privilegios Insuficientes !" }
@@ -1051,44 +875,55 @@ def registrar_producto(request):
     nomUsuario = request.session.get("nomUsuario")
     idUsuario = request.session.get("idUsuario")
     claseUsuario = request.session.get("claseUsuario")
-    
     if estadoSesion is True:
-        if claseUsuario.upper() == "ADMINISTRADOR":
+        if claseUsuario.upper() == "ADMINISTRADOR" or claseUsuario.upper() == "CAJERO":
             if request.method == "POST":
-                nom = request.POST["txtnompro"]
+                nom = request.POST["txtnompro"].upper()
                 des = request.POST["txtdespro"]
                 pre = request.POST["numprepro"]
-                
-                pro = Producto(
-                    nombre=nom,
-                    descripcion=des,
-                    precio=pre,
-                    usuario_id=idUsuario
-                )
-                pro.save()
-                pro_id = pro.id
-                
-                descripcion = f"Producto registrado ({ pro_id })"
-                tabla = "safari_producto"
-                fechayhora = datetime.now()
-                his = Historial(
-                    descripcion_historial = descripcion,
-                    tabla_afectada_historial = tabla,
-                    fecha_hora_historial = fechayhora,
-                    usuario_id = request.session["idUsuario"]
-                )
-                his.save()
-                
-                pro_lista = Producto.objects.select_related('usuario').all().order_by("nombre")
-                datos = {
-                    "pro" : pro_lista,
-                    "nomUsuario" : nomUsuario,
-                    "r" : f"¡ Producto Creado Exitosamente ({ pro_id }) !"
-                }
-                return render(request, "administrar_productos.html", datos)
+                comprobarNombreProducto = Producto.objects.filter(nombre = nom, estado_id=1)
+                if comprobarNombreProducto:
+                    pro = Producto.objects.select_related('usuario').filter(estado_id=1).order_by("nombre")
+                    datos ={
+                        "r2" : "¡ El Producto ("+str(nom).upper()+") ya Existe !",
+                        "pro" : pro,
+                        "claseUsuario" : claseUsuario,
+                        "nomUsuario" : nomUsuario
+                    }
+                    return render(request, "administrar_productos.html", datos)   
+                else:
+                    pro = Producto(
+                        nombre=nom,
+                        descripcion=des,
+                        precio=pre,
+                        estado_id = 1,
+                        usuario_id=idUsuario,
+                    )
+                    pro.save()
+                    pro_id = pro.id
+                    
+                    descripcion = f"Producto registrado ({ pro_id })"
+                    tabla = "safari_producto"
+                    fechayhora = datetime.now()
+                    his = Historial(
+                        descripcion_historial = descripcion,
+                        tabla_afectada_historial = tabla,
+                        fecha_hora_historial = fechayhora,
+                        usuario_id = request.session["idUsuario"]
+                    )
+                    his.save()
+                    
+                    pro_lista = Producto.objects.select_related('usuario').filter(estado_id = 1).all().order_by("nombre")
+                    datos = {
+                        "pro" : pro_lista,
+                        "nomUsuario" : nomUsuario,
+                        "r" : f"¡ Producto Creado Exitosamente ({ pro_id }) !",
+                        "claseUsuario" : claseUsuario
+                    }
+                    return render(request, "administrar_productos.html", datos)
             else:
-                pro_lista = Producto.objects.select_related('usuario').all().order_by("nombre")
-                datos = { "r2" : "¡ No Se Puede Procesar La Solicitud !", "pro" : pro_lista, "nomUsuario": nomUsuario }
+                pro_lista = Producto.objects.select_related('usuario').all().filter(estado_id = 1).order_by("nombre")
+                datos = { "r2" : "¡ No Se Puede Procesar La Solicitud !", "pro" : pro_lista, "nomUsuario": nomUsuario, "claseUsuario" : claseUsuario }
                 return render(request, "administrar_productos.html", datos)
         else:
             datos = { "r2" : "¡ No Tiene Permisos Para Acceder !" }
@@ -1101,17 +936,16 @@ def form_act_producto(request, id):
     estadoSesion = request.session.get("estadoSesion")
     nomUsuario = request.session.get("nomUsuario")
     claseUsuario = request.session.get("claseUsuario")
-
     rs = Producto.objects.filter(id = id)
-    
     if estadoSesion is True:
-        if claseUsuario.upper() == "ADMINISTRADOR":
-            if rs.exists():
-                datos = { "rs": rs, "nomUsuario" : nomUsuario} 
+        if claseUsuario.upper() == "ADMINISTRADOR" or claseUsuario.upper() == "CAJERO":
+            if rs:
+                pro = Producto.objects.select_related('usuario').filter(estado_id = 1).order_by("nombre")
+                datos = { "rs": rs, "nomUsuario" : nomUsuario, "pro" : pro, "claseUsuario" : claseUsuario} 
                 return render(request, "actualizar_productos.html", datos)
             else:
-                pro = Producto.objects.select_related('usuario').order_by("nombre")
-                datos = { "r2" : f"El id del Producto ({id}) No Existe.", "pro" : pro, "nomUsuario" : nomUsuario} 
+                pro = Producto.objects.select_related('usuario').filter(estado_id = 1).order_by("nombre")
+                datos = { "r2" : f"El id del Producto ({id}) No Existe.", "pro" : pro, "nomUsuario" : nomUsuario, "claseUsuario" : claseUsuario} 
                 return render(request, "administrar_productos.html", datos)
         else:
             datos = { "r2" : "¡ No Tiene Permisos Para Acceder. Privilegios Insuficientes !" }
@@ -1125,46 +959,59 @@ def actualizar_producto(request, id):
     nomUsuario = request.session.get("nomUsuario")
     idUsuario = request.session.get("idUsuario")
     claseUsuario = request.session.get("claseUsuario")
-
     if estadoSesion is True:
-        if claseUsuario.upper() == "ADMINISTRADOR":
+        if claseUsuario.upper() == "ADMINISTRADOR" or claseUsuario.upper() == "CAJERO" :
             if request.method == "POST":
-                nom = request.POST["txtnompro"]
+                nom = request.POST["txtnompro"].upper()
                 des = request.POST["txtdespro"]
                 pre = request.POST["numprepro"]
-                
-                pro = Producto.objects.get(id=id)
-                pro.nombre = nom
-                pro.descripcion = des
-                pro.precio = pre
-                # Mantenemos registro de quién hizo la última actualización
-                pro.usuario_id = idUsuario 
-                pro.save()
+                comprobarNombreProducto = Producto.objects.filter(nombre = nom, estado_id=1)
+                if comprobarNombreProducto:
+                    pro = Producto.objects.select_related('usuario').filter(estado_id=1).order_by("nombre")
+                    datos ={
+                        "r2" : "¡ El Producto ("+str(nom).upper()+") ya Existe !",
+                        "pro" : pro,
+                        "claseUsuario" : claseUsuario,
+                        "nomUsuario" : nomUsuario
+                    }
+                    return render(request, "administrar_productos.html", datos)   
+                else:
+                    pro = Producto.objects.get(id=id)
+                    pro.nombre = nom
+                    pro.descripcion = des
+                    pro.precio = pre
+                    pro.estado_id = 1
+                    # Mantenemos registro de quién hizo la última actualización
+                    pro.usuario_id = idUsuario 
+                    
+                    pro.save()
 
-                descripcion = f"Producto modificado ({ id })"
-                tabla = "safari_producto"
-                fechayhora = datetime.now()
-                his = Historial(
-                    descripcion_historial = descripcion,
-                    tabla_afectada_historial = tabla,
-                    fecha_hora_historial = fechayhora,
-                    usuario_id = request.session["idUsuario"]
-                )
-                his.save()
+                    descripcion = f"Producto modificado ({ id })"
+                    tabla = "safari_producto"
+                    fechayhora = datetime.now()
+                    his = Historial(
+                        descripcion_historial = descripcion,
+                        tabla_afectada_historial = tabla,
+                        fecha_hora_historial = fechayhora,
+                        usuario_id = request.session["idUsuario"]
+                    )
+                    his.save()
 
-                pro_lista = Producto.objects.select_related('usuario').all().order_by("nombre")
-                datos = {
-                    "nomUsuario" : nomUsuario,
-                    "pro" : pro_lista,
-                    "r" : f"¡ Producto ({ id }) Modificado Correctamente !"
-                }
-                return render(request, "administrar_productos.html", datos)
+                    pro = Producto.objects.select_related('usuario').all().filter(estado_id = 1).order_by("nombre")
+                    datos = {
+                        "nomUsuario" : nomUsuario,
+                        "pro" : pro,
+                        "r" : f"¡ Producto ({ id }) Modificado Correctamente !",
+                        "claseUsuario" : claseUsuario
+                    }
+                    return render(request, "administrar_productos.html", datos)
             else:
-                pro_lista = Producto.objects.select_related('usuario').all().order_by("nombre")
+                pro_lista = Producto.objects.select_related('usuario').all().filter(estado_id = 1).order_by("nombre")
                 datos = {
                     "nomUsuario" : nomUsuario,
-                    "pro" : pro_lista,
-                    "r2" : "¡ No Se Puede Procesar La Solicitud !"
+                    "pro_lista" : pro_lista,
+                    "r2" : "¡ No Se Puede Procesar La Solicitud !",
+                    "claseUsuario" : claseUsuario
                 }
                 return render(request, "administrar_productos.html", datos)
         else:
@@ -1178,12 +1025,12 @@ def eliminar_producto(request, id):
     estadoSesion = request.session.get("estadoSesion")
     nomUsuario = request.session.get("nomUsuario")
     claseUsuario = request.session.get("claseUsuario")
-    
     if estadoSesion is True:
-        if claseUsuario.upper() == "ADMINISTRADOR":
-            pro = Producto.objects.filter(id = id)
-            if pro.exists():
-                pro.delete()
+        if claseUsuario.upper() == "ADMINISTRADOR" or claseUsuario.upper() == "CAJERO":
+            pro = Producto.objects.filter(id = id, estado_id = 1).first()
+            if pro is not None:
+                pro.estado_id = 2
+                pro.save()
                 descripcion = f"Producto eliminado ({ id })"
                 tabla = "safari_producto"
                 fechayhora = datetime.now()
@@ -1194,20 +1041,21 @@ def eliminar_producto(request, id):
                     usuario_id = request.session["idUsuario"]
                 )
                 his.save()
-                
-                pro_lista = Producto.objects.select_related('usuario').all().order_by("-id")
+                pro_lista = Producto.objects.select_related('usuario').all().filter(estado_id = 1).order_by("-id")
                 datos = {
                     "nomUsuario" : nomUsuario,
                     "pro" : pro_lista,
-                    "r" : "¡ Producto Eliminado Correctamente !"
+                    "r" : "¡ Producto Eliminado Correctamente !",
+                    "claseUsuario" : claseUsuario
                 }
                 return render(request, "administrar_productos.html", datos)
             else:
-                pro_lista = Producto.objects.select_related('usuario').all().order_by("-id")
+                pro_lista = Producto.objects.select_related('usuario').all().filter(estado_id = 1).order_by("-id")
                 datos = {
                     "nomUsuario" : nomUsuario,
                     "pro" : pro_lista,
-                    "r2" : f"¡ El ID ({str(id)}) No Existe. Imposible Eliminar !"
+                    "r2" : f"¡ El ID ({str(id)}) No Existe. Imposible Eliminar !",
+                    "claseUsuario" : claseUsuario
                 }
                 return render(request, "administrar_productos.html", datos)
         else:
@@ -1222,13 +1070,11 @@ def jornada(request):
     nomUsuario = request.session.get("nomUsuario")
     idUsuario = request.session.get("idUsuario")
     claseUsuario = request.session.get("claseUsuario")
-
     if estadoSesion is True:
         if claseUsuario.upper() in ["CAJERO", "ADMINISTRADOR"]:
-            caja_abierta = JornadaCaja.objects.select_related('puntoventa').filter(usuario_id=idUsuario, estado="ABIERTA").first()
-            puntos = PuntodeVenta.objects.all().order_by("nombre")
+            caja_abierta = JornadaCaja.objects.select_related('puntoventa').filter(usuario_id=idUsuario, estado_J="ABIERTA").first()
+            puntos = PuntodeVenta.objects.all().filter(estado_id=1).order_by("nombre")
             historial_cajas = JornadaCaja.objects.select_related('puntoventa', 'usuario').filter(usuario_id=idUsuario).order_by("-id")[:10]
-
             if request.method == "POST":
                 accion = request.POST.get("accion")
 
@@ -1240,7 +1086,7 @@ def jornada(request):
                         usuario_id=idUsuario,
                         puntoventa_id=pdv_id,
                         monto_inicial=monto_ini,
-                        estado="ABIERTA"
+                        estado_J="ABIERTA"
                     )
                     nueva_caja.save()
 
@@ -1273,7 +1119,7 @@ def jornada(request):
                     ventas_sesion = Venta.objects.filter(
                         puntoventa_id=caja_abierta.puntoventa_id,
                         fecha__gte=caja_abierta.fecha_apertura,
-                        estado="PAGADA"
+                        estado_v="PAGADA"
                     ).aggregate(total=Sum('total'))['total'] or 0
 
                     esperado = caja_abierta.monto_inicial + ventas_sesion
@@ -1427,7 +1273,6 @@ def mostrar_listado_historial(request, orden):
                     his = Historial.objects.select_related('usuario').all().order_by("-usuario__nombre")
                 case _:
                     his = Historial.objects.select_related('usuario').all().order_by("-id")
-
             datos = {
                 "nomUsuario": nomUsuario,
                 "his": his

@@ -7,7 +7,6 @@ from django.views.static import serve
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.mostrar_index),
-    path('mostrar_login/', views.mostrar_login),
     path('login/', views.login),
     path('cerrar_sesion/', views.cerrar_sesion),
     
@@ -22,15 +21,10 @@ urlpatterns = [
     path('eliminar_producto/<int:id>/', views.eliminar_producto),
     
     path('administrar_mesas/', views.administrar_mesas),
-    path('administrar_admin_mesas/', views.administrar_admin_mesas),
     path('form_act_mes/<int:id>/', views.form_act_mes),
     path('actualizar_mesa/<int:id>/', views.actualizar_mesa),
-    path('form_act_mes_adm/<int:id>/', views.form_act_mes_adm),
-    path('actualizar_mesa_admin/<int:id>/', views.actualizar_mesa_admin),
     path('eliminar_mesas/<int:id>/', views.eliminar_mesas),
-    path('eliminar_mesas_admin/<int:id>/', views.eliminar_mesas_admin),
     path('registrar_mesa/', views.registrar_mesa),
-    path('registrar_mesa_admin/', views.registrar_mesa_admin),
     
     path('administrar_usuarios/', views.administrar_usuarios),
     path('actualizar_usuario/<int:id>/', views.actualizar_usuario),
