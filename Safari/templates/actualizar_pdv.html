@@ -264,7 +264,7 @@
                     <div class="row g-3">
                         <div class="col-md-12">
                             <label class="form-label-safari">Nombre del Punto de Venta</label>
-                            <input class="form-control" type="text" name="txtnompdv" value="{{ rs.0.nombre }}" maxlength="100" required>
+                            <input class="form-control" type="text" name="txtnompdv" id="txtnompdv" value="{{ rs.0.nombre }}" maxlength="100" required>
                         </div>
                         <div class="col-12 text-end pt-2">
                             <a href="/administrar_pdv/" class="btn btn-outline-secondary rounded-pill px-4 me-2">Cancelar</a>
@@ -314,5 +314,13 @@
 
 
         </div>
+    <script>
+		const inputusuarios = document.getElementById('txtnompdv');
+		inputusuarios.addEventListener('input', function () {
+			let limpio = this.value.replace(/[^a-z0-9]/g, '');
+			this.value = limpio;
+		});
+	</script>
+         
     </body>
 </html>

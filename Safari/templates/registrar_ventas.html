@@ -286,7 +286,7 @@
                         </div>
                         <div class="col-md-1">
                             <label class="form-label-safari">Cant.</label>
-                            <input type="number" name="txtcantidad" value="1" min="1" class="form-control" required>
+                            <input type="number" name="txtcantidad" id="txtcantidad" value="1" min="1" class="form-control" required>
                         </div>
                         <div class="col-md-2">
                             <button type="submit" class="btn-safari-submit w-100">
@@ -340,5 +340,48 @@
                 </div>
             </div>
         </div>
+
+	<script>
+		// -----------------------------------------------------------------
+		// --- Validación para que el campo "txtid" acepte solo números. ---
+		// -----------------------------------------------------------------
+		const inputtxtcantidad = document.getElementById('txtcantidad');
+
+		// Bloqueo anticipado en teclas presionadas
+		inputtxtcantidad.addEventListener('keydown', function (e) {
+			const tecla = e.key;
+			const permitido = /^[0-9]$/;
+			const especiales = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+
+			// Bloquear explícitamente "+" y "e"
+			if (tecla === '+' || tecla.toLowerCase() === 'e') {
+				e.preventDefault();
+				return;
+			}
+
+			// Limitar a 5 dígitos (excepto con teclas especiales)
+			if (!especiales.includes(tecla) && this.value.length >= 5) {
+				e.preventDefault();
+				return;
+			}
+
+			// Bloquear lo que no sea número ni tecla especial
+			if (!permitido.test(tecla) && !especiales.includes(tecla)) {
+				e.preventDefault();
+			}
+		});
+
+		// Validación adicional por si se cuela algún carácter (ej. con tildes o pegado)
+		inputid.addEventListener('input', function () {
+			// Eliminar cualquier carácter que no sea dígito
+			this.value = this.value.replace(/[^0-9]/g, '');
+
+			// Limitar a máximo 7 caracteres (por si se pega texto largo)
+			if (this.value.length > 7) {
+				this.value = this.value.slice(0, 7);
+			}
+		});
+	</script>
+
     </body>
 </html>

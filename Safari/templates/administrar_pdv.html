@@ -286,7 +286,7 @@
                     <div class="row g-3 align-items-end">
                         <div class="col-md-9">
                             <label class="form-label-safari">Nombre del Punto de Venta</label>
-                            <input class="form-control" type="text" name="txtnompdv" placeholder="Ej: Restaurante Safari Central" maxlength="100" required>
+                            <input class="form-control" type="text" name="txtnompdv" id="txtnompdv" placeholder="Ej: Restaurante Safari Central" maxlength="100" required>
                         </div>
                         <div class="col-md-3">
                             <button class="btn-safari-submit w-100" type="submit">
@@ -333,5 +333,14 @@
                 </div>
             </div>
         </div>
+
+    <script>
+		const inputusuarios = document.getElementById('txtnompdv');
+		inputusuarios.addEventListener('input', function () {
+			let limpio = this.value.replace(/[^a-z0-9]/g, '');
+			this.value = limpio;
+		});
+	</script>
+        
     </body>
 </html>
