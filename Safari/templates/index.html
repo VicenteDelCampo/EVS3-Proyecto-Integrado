@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    {% load static %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Login - Parque Safari</title>
@@ -11,47 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.all.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.min.css">
-    <style>
-        body {
-            background-color: #f5f0e8;
-            color: #2d1b00;
-            font-family: 'Lato', sans-serif;
-            min-height: 100vh;
-        }
-        .navbar-safari { background-color: #2d1b00; }
-        .navbar-safari .navbar-brand { color: #e8a020 !important; font-weight: 700; }
-        .navbar-safari .nav-link { color: #f5f0e8 !important; }
-        .navbar-safari .nav-link:hover { color: #e8a020 !important; }
-        .login-card {
-            background-color: #fffdf7;
-            border: 1px solid #ddd0b8;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(45,27,0,0.12);
-        }
-        .form-control:focus {
-            border-color: #c4850a;
-            box-shadow: 0 0 0 0.2rem rgba(196, 133, 10, 0.2);
-        }
-        .form-control {
-            border-radius: 10px;
-            border-color: #ddd0b8;
-            padding: 0.65rem 1rem;
-        }
-        .btn-login {
-            background-color: #8b5e1a;
-            border: none;
-            border-radius: 20px;
-            color: #fff;
-            font-weight: 600;
-            padding: 0.6rem 1.5rem;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-        .btn-login:hover {
-            background-color: #c4850a;
-            color: #fff;
-            transform: translateY(-1px);
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'estilos.css' %}">
 </head>
 <body>
     <div class="fs-5 fw-bold">
@@ -122,7 +83,7 @@
     <script>
 		const inputusuarios = document.getElementById('txtusu');
 		inputusuarios.addEventListener('input', function () {
-			let limpio = this.value.replace(/[^a-z0-9.-]/g, '');
+			let limpio = this.value.replace(/[^a-zA-Z0-9.-]/g, '');
 			this.value = limpio;
 		});
 	</script>
