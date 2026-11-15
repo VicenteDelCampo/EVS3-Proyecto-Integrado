@@ -291,11 +291,11 @@
                     <div class="row g-3">
                         <div class="col-md-5">
                             <label class="form-label-safari">Nombre del Producto</label>
-                            <input class="form-control" type="text" name="txtnompro" placeholder="Ej: Menú Hamburguesa Safari" required>
+                            <input class="form-control" type="text" name="txtnompro" id="txtnompro" placeholder="Ej: Menú Hamburguesa Safari" required>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label-safari">Precio ($)</label>
-                            <input class="form-control" type="number" name="numprepro" min="0" placeholder="Ej: 6500" required>
+                            <input class="form-control" type="number" name="numprepro" id="numprepro" min="0" placeholder="Ej: 6500" required>
                         </div>
                         <div class="col-md-4 d-flex align-items-end">
                             <button class="btn-safari-submit w-100" type="submit">
@@ -304,7 +304,7 @@
                         </div>
                         <div class="col-12">
                             <label class="form-label-safari">Descripción</label>
-                            <input class="form-control" type="text" name="txtdespro" placeholder="Breve descripción del producto o servicio" required>
+                            <input class="form-control" type="text" name="txtdespro" id="txtdespro" placeholder="Breve descripción del producto o servicio" required>
                         </div>
                     </div>
                 </form>
@@ -344,5 +344,63 @@
                 </div>
             </div>
         </div>
+
+    <script>
+		const inputusuarios = document.getElementById('txtnompro');
+		inputusuarios.addEventListener('input', function () {
+			let limpio = this.value.replace(/[^a-zA-Z\s]/g, '');
+			this.value = limpio;
+		});
+	</script>
+
+    <script>
+		const inputdes = document.getElementById('txtdespro');
+		inputdes.addEventListener('input', function () {
+			let limpio = this.value.replace(/[^a-zA-Z\s,.]/g, '');
+			this.value = limpio;
+		});
+	</script>
+
+	<script>
+		// -----------------------------------------------------------------
+		// --- Validación para que el campo "txtid" acepte solo números. ---
+		// -----------------------------------------------------------------
+		const inputid = document.getElementById('numprepro');
+
+		// Bloqueo anticipado en teclas presionadas
+		inputid.addEventListener('keydown', function (e) {
+			const tecla = e.key;
+			const permitido = /^[0-9]$/;
+			const especiales = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+
+			// Bloquear explícitamente "+" y "e"
+			if (tecla === '+' || tecla.toLowerCase() === 'e') {
+				e.preventDefault();
+				return;
+			}
+
+			// Limitar a 5 dígitos (excepto con teclas especiales)
+			if (!especiales.includes(tecla) && this.value.length >= 5) {
+				e.preventDefault();
+				return;
+			}
+
+			// Bloquear lo que no sea número ni tecla especial
+			if (!permitido.test(tecla) && !especiales.includes(tecla)) {
+				e.preventDefault();
+			}
+		});
+
+		// Validación adicional por si se cuela algún carácter (ej. con tildes o pegado)
+		inputid.addEventListener('input', function () {
+			// Eliminar cualquier carácter que no sea dígito
+			this.value = this.value.replace(/[^0-9]/g, '');
+
+			// Limitar a máximo 7 caracteres (por si se pega texto largo)
+			if (this.value.length > 7) {
+				this.value = this.value.slice(0, 7);
+			}
+		});
+	</script>
     </body>
 </html>

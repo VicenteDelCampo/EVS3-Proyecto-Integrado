@@ -307,19 +307,19 @@
                         <div class="row g-2 mb-3">
                             <div class="col-md-3">
                                 <label class="form-label-safari">$20.000</label>
-                                <input type="number" name="b20000" value="0" min="0" class="form-control form-control-sm">
+                                <input type="number" name="b20000" id="b20000" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label-safari">$10.000</label>
-                                <input type="number" name="b10000" value="0" min="0" class="form-control form-control-sm">
+                                <input type="number" name="b10000" id="b10000" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label-safari">$5.000</label>
-                                <input type="number" name="b5000" value="0" min="0" class="form-control form-control-sm">
+                                <input type="number" name="b5000" id="b5000" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label-safari">$1.000</label>
-                                <input type="number" name="b1000" value="0" min="0" class="form-control form-control-sm">
+                                <input type="number" name="b1000" id="b1000" value="0" min="0" class="form-control form-control-sm">
                             </div>
                         </div>
 
@@ -327,27 +327,27 @@
                         <div class="row g-2 mb-3">
                             <div class="col">
                                 <label class="form-label-safari">$500</label>
-                                <input type="number" name="m500" value="0" min="0" class="form-control form-control-sm">
+                                <input type="number" name="m500" id="m500" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col">
                                 <label class="form-label-safari">$100</label>
-                                <input type="number" name="m100" value="0" min="0" class="form-control form-control-sm">
+                                <input type="number" name="m100" id="m100" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col">
                                 <label class="form-label-safari">$50</label>
-                                <input type="number" name="m50" value="0" min="0" class="form-control form-control-sm">
+                                <input type="number" name="m50" id="m50" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col">
                                 <label class="form-label-safari">$10</label>
-                                <input type="number" name="m10" value="0" min="0" class="form-control form-control-sm">
+                                <input type="number" name="m10" id="m10" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col">
                                 <label class="form-label-safari">$5</label>
-                                <input type="number" name="m5" value="0" min="0" class="form-control form-control-sm">
+                                <input type="number" name="m5" id="m5" value="0" min="0" class="form-control form-control-sm">
                             </div>
                             <div class="col">
                                 <label class="form-label-safari">$1</label>
-                                <input type="number" name="m1" value="0" min="0" class="form-control form-control-sm">
+                                <input type="number" name="m1" id="m1" value="0" min="0" class="form-control form-control-sm">
                             </div>
                         </div>
 
@@ -400,5 +400,425 @@
                 </div>
             </div>
         </div>
+
+	<script>
+		// -----------------------------------------------------------------
+		// --- Validación para que el campo "txtid" acepte solo números. ---
+		// -----------------------------------------------------------------
+		const inputb20000 = document.getElementById('b20000');
+
+		// Bloqueo anticipado en teclas presionadas
+		inputb20000.addEventListener('keydown', function (e) {
+			const tecla = e.key;
+			const permitido = /^[0-9]$/;
+			const especiales = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+
+			// Bloquear explícitamente "+" y "e"
+			if (tecla === '+' || tecla.toLowerCase() === 'e') {
+				e.preventDefault();
+				return;
+			}
+
+			// Limitar a 5 dígitos (excepto con teclas especiales)
+			if (!especiales.includes(tecla) && this.value.length >= 5) {
+				e.preventDefault();
+				return;
+			}
+
+			// Bloquear lo que no sea número ni tecla especial
+			if (!permitido.test(tecla) && !especiales.includes(tecla)) {
+				e.preventDefault();
+			}
+		});
+
+		// Validación adicional por si se cuela algún carácter (ej. con tildes o pegado)
+		inputid.addEventListener('input', function () {
+			// Eliminar cualquier carácter que no sea dígito
+			this.value = this.value.replace(/[^0-9]/g, '');
+
+			// Limitar a máximo 7 caracteres (por si se pega texto largo)
+			if (this.value.length > 7) {
+				this.value = this.value.slice(0, 7);
+			}
+		});
+	</script>
+	<script>
+		// -----------------------------------------------------------------
+		// --- Validación para que el campo "txtid" acepte solo números. ---
+		// -----------------------------------------------------------------
+		const inputb10000 = document.getElementById('b10000');
+
+		// Bloqueo anticipado en teclas presionadas
+		inputb10000.addEventListener('keydown', function (e) {
+			const tecla = e.key;
+			const permitido = /^[0-9]$/;
+			const especiales = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+
+			// Bloquear explícitamente "+" y "e"
+			if (tecla === '+' || tecla.toLowerCase() === 'e') {
+				e.preventDefault();
+				return;
+			}
+
+			// Limitar a 5 dígitos (excepto con teclas especiales)
+			if (!especiales.includes(tecla) && this.value.length >= 5) {
+				e.preventDefault();
+				return;
+			}
+
+			// Bloquear lo que no sea número ni tecla especial
+			if (!permitido.test(tecla) && !especiales.includes(tecla)) {
+				e.preventDefault();
+			}
+		});
+
+		// Validación adicional por si se cuela algún carácter (ej. con tildes o pegado)
+		inputid.addEventListener('input', function () {
+			// Eliminar cualquier carácter que no sea dígito
+			this.value = this.value.replace(/[^0-9]/g, '');
+
+			// Limitar a máximo 7 caracteres (por si se pega texto largo)
+			if (this.value.length > 7) {
+				this.value = this.value.slice(0, 7);
+			}
+		});
+	</script>
+
+    <script>
+		// -----------------------------------------------------------------
+		// --- Validación para que el campo "txtid" acepte solo números. ---
+		// -----------------------------------------------------------------
+		const inputb5000 = document.getElementById('b5000');
+
+		// Bloqueo anticipado en teclas presionadas
+		inputb5000.addEventListener('keydown', function (e) {
+			const tecla = e.key;
+			const permitido = /^[0-9]$/;
+			const especiales = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+
+			// Bloquear explícitamente "+" y "e"
+			if (tecla === '+' || tecla.toLowerCase() === 'e') {
+				e.preventDefault();
+				return;
+			}
+
+			// Limitar a 5 dígitos (excepto con teclas especiales)
+			if (!especiales.includes(tecla) && this.value.length >= 5) {
+				e.preventDefault();
+				return;
+			}
+
+			// Bloquear lo que no sea número ni tecla especial
+			if (!permitido.test(tecla) && !especiales.includes(tecla)) {
+				e.preventDefault();
+			}
+		});
+
+		// Validación adicional por si se cuela algún carácter (ej. con tildes o pegado)
+		inputid.addEventListener('input', function () {
+			// Eliminar cualquier carácter que no sea dígito
+			this.value = this.value.replace(/[^0-9]/g, '');
+
+			// Limitar a máximo 7 caracteres (por si se pega texto largo)
+			if (this.value.length > 7) {
+				this.value = this.value.slice(0, 7);
+			}
+		});
+	</script>
+
+    <script>
+		// -----------------------------------------------------------------
+		// --- Validación para que el campo "txtid" acepte solo números. ---
+		// -----------------------------------------------------------------
+		const inputb1000 = document.getElementById('b1000');
+
+		// Bloqueo anticipado en teclas presionadas
+		inputb1000.addEventListener('keydown', function (e) {
+			const tecla = e.key;
+			const permitido = /^[0-9]$/;
+			const especiales = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+
+			// Bloquear explícitamente "+" y "e"
+			if (tecla === '+' || tecla.toLowerCase() === 'e') {
+				e.preventDefault();
+				return;
+			}
+
+			// Limitar a 5 dígitos (excepto con teclas especiales)
+			if (!especiales.includes(tecla) && this.value.length >= 5) {
+				e.preventDefault();
+				return;
+			}
+
+			// Bloquear lo que no sea número ni tecla especial
+			if (!permitido.test(tecla) && !especiales.includes(tecla)) {
+				e.preventDefault();
+			}
+		});
+
+		// Validación adicional por si se cuela algún carácter (ej. con tildes o pegado)
+		inputid.addEventListener('input', function () {
+			// Eliminar cualquier carácter que no sea dígito
+			this.value = this.value.replace(/[^0-9]/g, '');
+
+			// Limitar a máximo 7 caracteres (por si se pega texto largo)
+			if (this.value.length > 7) {
+				this.value = this.value.slice(0, 7);
+			}
+		});
+	</script>
+
+    <script>
+		// -----------------------------------------------------------------
+		// --- Validación para que el campo "txtid" acepte solo números. ---
+		// -----------------------------------------------------------------
+		const inputm500 = document.getElementById('m500');
+
+		// Bloqueo anticipado en teclas presionadas
+		inputm500.addEventListener('keydown', function (e) {
+			const tecla = e.key;
+			const permitido = /^[0-9]$/;
+			const especiales = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+
+			// Bloquear explícitamente "+" y "e"
+			if (tecla === '+' || tecla.toLowerCase() === 'e') {
+				e.preventDefault();
+				return;
+			}
+
+			// Limitar a 5 dígitos (excepto con teclas especiales)
+			if (!especiales.includes(tecla) && this.value.length >= 5) {
+				e.preventDefault();
+				return;
+			}
+
+			// Bloquear lo que no sea número ni tecla especial
+			if (!permitido.test(tecla) && !especiales.includes(tecla)) {
+				e.preventDefault();
+			}
+		});
+
+		// Validación adicional por si se cuela algún carácter (ej. con tildes o pegado)
+		inputid.addEventListener('input', function () {
+			// Eliminar cualquier carácter que no sea dígito
+			this.value = this.value.replace(/[^0-9]/g, '');
+
+			// Limitar a máximo 7 caracteres (por si se pega texto largo)
+			if (this.value.length > 7) {
+				this.value = this.value.slice(0, 7);
+			}
+		});
+	</script>
+
+    <script>
+		// -----------------------------------------------------------------
+		// --- Validación para que el campo "txtid" acepte solo números. ---
+		// -----------------------------------------------------------------
+		const inputm100 = document.getElementById('m100');
+
+		// Bloqueo anticipado en teclas presionadas
+		inputm100.addEventListener('keydown', function (e) {
+			const tecla = e.key;
+			const permitido = /^[0-9]$/;
+			const especiales = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+
+			// Bloquear explícitamente "+" y "e"
+			if (tecla === '+' || tecla.toLowerCase() === 'e') {
+				e.preventDefault();
+				return;
+			}
+
+			// Limitar a 5 dígitos (excepto con teclas especiales)
+			if (!especiales.includes(tecla) && this.value.length >= 5) {
+				e.preventDefault();
+				return;
+			}
+
+			// Bloquear lo que no sea número ni tecla especial
+			if (!permitido.test(tecla) && !especiales.includes(tecla)) {
+				e.preventDefault();
+			}
+		});
+
+		// Validación adicional por si se cuela algún carácter (ej. con tildes o pegado)
+		inputid.addEventListener('input', function () {
+			// Eliminar cualquier carácter que no sea dígito
+			this.value = this.value.replace(/[^0-9]/g, '');
+
+			// Limitar a máximo 7 caracteres (por si se pega texto largo)
+			if (this.value.length > 7) {
+				this.value = this.value.slice(0, 7);
+			}
+		});
+	</script>
+
+    <script>
+		// -----------------------------------------------------------------
+		// --- Validación para que el campo "txtid" acepte solo números. ---
+		// -----------------------------------------------------------------
+		const inputm50 = document.getElementById('m50');
+
+		// Bloqueo anticipado en teclas presionadas
+		inputm50.addEventListener('keydown', function (e) {
+			const tecla = e.key;
+			const permitido = /^[0-9]$/;
+			const especiales = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+
+			// Bloquear explícitamente "+" y "e"
+			if (tecla === '+' || tecla.toLowerCase() === 'e') {
+				e.preventDefault();
+				return;
+			}
+
+			// Limitar a 5 dígitos (excepto con teclas especiales)
+			if (!especiales.includes(tecla) && this.value.length >= 5) {
+				e.preventDefault();
+				return;
+			}
+
+			// Bloquear lo que no sea número ni tecla especial
+			if (!permitido.test(tecla) && !especiales.includes(tecla)) {
+				e.preventDefault();
+			}
+		});
+
+		// Validación adicional por si se cuela algún carácter (ej. con tildes o pegado)
+		inputid.addEventListener('input', function () {
+			// Eliminar cualquier carácter que no sea dígito
+			this.value = this.value.replace(/[^0-9]/g, '');
+
+			// Limitar a máximo 7 caracteres (por si se pega texto largo)
+			if (this.value.length > 7) {
+				this.value = this.value.slice(0, 7);
+			}
+		});
+	</script>
+
+    <script>
+		// -----------------------------------------------------------------
+		// --- Validación para que el campo "txtid" acepte solo números. ---
+		// -----------------------------------------------------------------
+		const inputm10 = document.getElementById('m10');
+
+		// Bloqueo anticipado en teclas presionadas
+		inputm10.addEventListener('keydown', function (e) {
+			const tecla = e.key;
+			const permitido = /^[0-9]$/;
+			const especiales = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+
+			// Bloquear explícitamente "+" y "e"
+			if (tecla === '+' || tecla.toLowerCase() === 'e') {
+				e.preventDefault();
+				return;
+			}
+
+			// Limitar a 5 dígitos (excepto con teclas especiales)
+			if (!especiales.includes(tecla) && this.value.length >= 5) {
+				e.preventDefault();
+				return;
+			}
+
+			// Bloquear lo que no sea número ni tecla especial
+			if (!permitido.test(tecla) && !especiales.includes(tecla)) {
+				e.preventDefault();
+			}
+		});
+
+		// Validación adicional por si se cuela algún carácter (ej. con tildes o pegado)
+		inputid.addEventListener('input', function () {
+			// Eliminar cualquier carácter que no sea dígito
+			this.value = this.value.replace(/[^0-9]/g, '');
+
+			// Limitar a máximo 7 caracteres (por si se pega texto largo)
+			if (this.value.length > 7) {
+				this.value = this.value.slice(0, 7);
+			}
+		});
+	</script>
+
+    <script>
+		// -----------------------------------------------------------------
+		// --- Validación para que el campo "txtid" acepte solo números. ---
+		// -----------------------------------------------------------------
+		const inputm5 = document.getElementById('m5');
+
+		// Bloqueo anticipado en teclas presionadas
+		inputm5.addEventListener('keydown', function (e) {
+			const tecla = e.key;
+			const permitido = /^[0-9]$/;
+			const especiales = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+
+			// Bloquear explícitamente "+" y "e"
+			if (tecla === '+' || tecla.toLowerCase() === 'e') {
+				e.preventDefault();
+				return;
+			}
+
+			// Limitar a 5 dígitos (excepto con teclas especiales)
+			if (!especiales.includes(tecla) && this.value.length >= 5) {
+				e.preventDefault();
+				return;
+			}
+
+			// Bloquear lo que no sea número ni tecla especial
+			if (!permitido.test(tecla) && !especiales.includes(tecla)) {
+				e.preventDefault();
+			}
+		});
+
+		// Validación adicional por si se cuela algún carácter (ej. con tildes o pegado)
+		inputid.addEventListener('input', function () {
+			// Eliminar cualquier carácter que no sea dígito
+			this.value = this.value.replace(/[^0-9]/g, '');
+
+			// Limitar a máximo 7 caracteres (por si se pega texto largo)
+			if (this.value.length > 7) {
+				this.value = this.value.slice(0, 7);
+			}
+		});
+	</script>
+
+    <script>
+		// -----------------------------------------------------------------
+		// --- Validación para que el campo "txtid" acepte solo números. ---
+		// -----------------------------------------------------------------
+		const inputm1 = document.getElementById('m1');
+
+		// Bloqueo anticipado en teclas presionadas
+		inputm1.addEventListener('keydown', function (e) {
+			const tecla = e.key;
+			const permitido = /^[0-9]$/;
+			const especiales = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+
+			// Bloquear explícitamente "+" y "e"
+			if (tecla === '+' || tecla.toLowerCase() === 'e') {
+				e.preventDefault();
+				return;
+			}
+
+			// Limitar a 5 dígitos (excepto con teclas especiales)
+			if (!especiales.includes(tecla) && this.value.length >= 5) {
+				e.preventDefault();
+				return;
+			}
+
+			// Bloquear lo que no sea número ni tecla especial
+			if (!permitido.test(tecla) && !especiales.includes(tecla)) {
+				e.preventDefault();
+			}
+		});
+
+		// Validación adicional por si se cuela algún carácter (ej. con tildes o pegado)
+		inputid.addEventListener('input', function () {
+			// Eliminar cualquier carácter que no sea dígito
+			this.value = this.value.replace(/[^0-9]/g, '');
+
+			// Limitar a máximo 7 caracteres (por si se pega texto largo)
+			if (this.value.length > 7) {
+				this.value = this.value.slice(0, 7);
+			}
+		});
+	</script>
+
     </body>
 </html>

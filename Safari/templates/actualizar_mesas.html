@@ -264,7 +264,7 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label-safari">Nombre de la Mesa</label>
-                            <input class="form-control" type="text" name="txtnommes" value="{{ rs.0.nombre }}" maxlength="30" required>
+                            <input class="form-control" type="text" name="txtnommes" id="txtnommes" value="{{ rs.0.nombre }}" maxlength="30" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label-safari">Punto de Venta</label>
@@ -338,5 +338,15 @@
             </div>
 
         </div>
+
+    <script>
+		const inputusuarios = document.getElementById('txtnommes');
+		inputusuarios.addEventListener('input', function () {
+			let limpio = this.value.replace(/[^a-z0-9.-]/g, '');
+			this.value = limpio;
+		});
+	</script>
+
+
     </body>
 </html>

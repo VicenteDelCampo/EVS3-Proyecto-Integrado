@@ -286,11 +286,11 @@
                     <div class="row g-3 align-items-end">
                         <div class="col-md-4">
                             <label class="form-label-safari">Nombre de Usuario</label>
-                            <input class="form-control" type="text" name="txtnomusu" placeholder="Ej: 11.111.111-1" maxlength="12" required>
+                            <input class="form-control" type="text" name="txtnomusu" id="txtnomusu" placeholder="Ej: 11.111.111-1" maxlength="12" required>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label-safari">Contraseña</label>
-                            <input class="form-control" type="password" name="txtconusu" placeholder="Contraseña" maxlength="25" required>
+                            <input class="form-control" type="password" name="txtconusu" id="txtconusu" placeholder="Contraseña" maxlength="25" required>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label-safari">Clase / Rol</label>
@@ -344,5 +344,20 @@
                 </div>
             </div>
         </div>
+
+    <script>
+		const inputusuarios = document.getElementById('txtnomusu');
+		inputusuarios.addEventListener('input', function () {
+			let limpio = this.value.replace(/[^a-z0-9.-]/g, '');
+			this.value = limpio;
+		});
+	</script>
+	<script>
+		const inputpassword = document.getElementById('txtconusu');
+		inputpassword.addEventListener('input', function () {
+			let limpio = this.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g, '');
+			this.value = limpio;
+		});
+	</script>
     </body>
 </html>
